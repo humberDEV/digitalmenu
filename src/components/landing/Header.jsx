@@ -3,11 +3,11 @@ import React from "react";
 export default function Header() {
   return (
     <header className="p-4 w-full">
-      <div className="max-w-6xl flex justify-between items-center p-4 mx-auto">
+      <div className="max-w-screen-2xl flex justify-between items-center p-4 mx-auto">
         {/* Logo */}
-        <div className="text-2xl font-bold flex items-center space-x-1">
+        <div className="text-3xl font-bold flex items-center space-x-1 hover:scale-105 transition-transform">
           <a href="/" className="flex items-center">
-            <span className="font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-indigo-500 text-2xl">
+            <span className="font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-indigo-500">
               Digi
             </span>
             <span className="text-gray-800 font-bold">Menu</span>
@@ -18,7 +18,7 @@ export default function Header() {
         <div className="hidden md:flex space-x-4">
           <button className="btn btn-ghost text-xl">Precios</button>
           <button className="btn bg-black text-white rounded-xl text-xl hover:scale-105 transition-transform">
-            Cuenta
+            <a href="/login">Accede a tu cuenta</a>
           </button>
         </div>
 

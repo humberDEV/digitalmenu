@@ -1,6 +1,8 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
 
+import { Toaster } from "sonner";
+
 export const metadata = {
   title: "DigiMenu - Menús digitales para restaurantes",
   description:
@@ -15,7 +17,11 @@ const poppins = Poppins({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${poppins.className} antialiased`}>{children}</body>
+      <body className={`${poppins.className} antialiased`}>
+        {" "}
+        <Toaster richColors position="top-center" />
+        {children}
+      </body>
     </html>
   );
 }

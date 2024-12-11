@@ -3,35 +3,33 @@ import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="flex items-center justify-center h-[90vh] text-center px-4 mt-4 md:mt-10">
-      <div className="flex flex-col items-center w-full mx-auto space-y-8 sm:space-y-10 ">
+    <section className="flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-16 lg:px-20 xl:px-24 max-w-screen-2xl mx-auto min-h-[85vh]">
+      {/* Contenido textual */}
+      <div className="flex-1 text-center md:text-left space-y-6">
         {/* Título */}
         <h1
-          className="text-2xl font-extrabold text-gray-900 sm:text-4xl md:text-5xl lg:text-6xl"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900"
           style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
         >
-          Tu menú digital{" "}
-          <span className="bg-gradient-to-r from-teal-400 to-cyan-500 text-white px-2 rounded-lg inline-block -rotate-1 hover:rotate-0 transition-transform">
+          Tu menú digital
+          <span className="ml-2 bg-gradient-to-r from-teal-400 to-cyan-500 text-white px-2 py-1 rounded-lg inline-block -rotate-1 hover:rotate-0 transition-transform">
             en minutos
           </span>
-          {""}, sin complicaciones
+          {", sin complicaciones"}
         </h1>
 
         {/* Subtítulo */}
-        <p className="text-md sm:text-lg md:text-2xl text-gray-700 max-w-5xl font-semibold">
-          Transforma la forma en que tus clientes ven tu negocio. Crea tu menú
-          digital rápido, sin complicaciones y listo para usar.
+        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 font-semibold">
+          Transforma la forma en que tus clientes ven tu negocio. Tus clientes
+          podrán ver el menú de tu restaurante a través de QR o página web
         </p>
 
         {/* Botón de acción */}
-        <div className="mt-4 sm:mt-6">
+        <div className="mt-4 sm:mt-6 space-y-2 md:space-y-0 space-x-0 md:space-x-4 flex flex-col md:flex-row">
           <a href="#contact">
-            <button
-              className="btn bg-teal-100 text-black border-2 
-              border-black rounded-full btn-lg px-8 shadow-lg transition-transform transform hover:scale-105 hover:bg-teal-300"
-            >
+            <button className="btn btn-md md:btn-lg bg-teal-100 text-black border-2 border-black rounded-full px-6 py-3 shadow-lg transition-transform transform hover:scale-105 hover:bg-teal-300">
               <span className="flex items-center justify-center space-x-2">
-                <span>Pide ahora una prueba gratuita</span>
+                <span>Solicitar llamada</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -39,6 +37,27 @@ export default function HeroSection() {
                   strokeWidth={1.5}
                   stroke="currentColor"
                   className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"
+                  />
+                </svg>
+              </span>
+            </button>
+          </a>
+          <a href="#contact">
+            <button className="btn btn-md md:btn-lg bg-teal-100 text-black border-2 border-black rounded-full px-6 py-3 shadow-lg transition-transform transform hover:scale-105 hover:bg-teal-300">
+              <span className="flex items-center justify-center space-x-2">
+                <span>Enviar whatsapp</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5"
                 >
                   <path
                     strokeLinecap="round"
@@ -53,22 +72,23 @@ export default function HeroSection() {
 
         {/* Testimonio */}
         <div className="text-gray-600 mt-6 sm:mt-8">
-          <p className="text-base sm:text-md font-thin">
-            Únete a más de 12 restaurantes{" "}
-            <span className="text-teal-600">que ya confían</span> en DigiMenu.
+          <p className="text-sm sm:text-base md:text-lg font-light">
+            Únete a más de 12 restaurantes
+            <span className="text-teal-600 font-medium"> que ya confían </span>
+            en DigiMenu.
           </p>
         </div>
+      </div>
 
-        {/* Imagen decorativa */}
-        <div className="mt-6 sm:mt-8">
-          <Image
-            src="/hero_qr.png"
-            alt="Vista previa del menú digital"
-            width={600}
-            height={600}
-            className="w-full max-w-md sm:max-w-lg md:max-w-2xl"
-          />
-        </div>
+      {/* Imagen */}
+      <div className="flex mb-8 justify-center w-full md:w-2/5">
+        <Image
+          src="/hero_qr.png"
+          alt="Vista previa del menú digital"
+          width={600}
+          height={600}
+          className="w-full h-auto max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
+        />
       </div>
     </section>
   );
