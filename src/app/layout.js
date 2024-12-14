@@ -1,6 +1,8 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
 
+import connectDB from "../../lib/mongodb";
+
 import { Toaster } from "sonner";
 
 export const metadata = {
@@ -15,6 +17,9 @@ const poppins = Poppins({
 });
 
 export default function RootLayout({ children }) {
+  // try to connect to mongodb
+  connectDB();
+
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased`}>

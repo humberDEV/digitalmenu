@@ -16,10 +16,15 @@ export default function Header() {
 
         {/* Botones de navegación */}
         <div className="hidden md:flex space-x-4">
-          <button className="btn btn-ghost text-xl">Precios</button>
-          <button className="btn bg-black text-white rounded-xl text-xl hover:scale-105 transition-transform">
-            <a href="/login">Accede a tu cuenta</a>
-          </button>
+          <a href="/pricing" className="btn btn-ghost text-xl">
+            Precios
+          </a>
+          <a
+            href="/login"
+            className="btn bg-black text-white rounded-xl text-xl hover:scale-105 transition-transform"
+          >
+            Accede a tu cuenta
+          </a>
         </div>
 
         {/* Menú desplegable para móviles */}
@@ -50,7 +55,7 @@ export default function Header() {
               className="menu bg-slate-100 dropdown-content rounded-box z-[1] mt-4 w-52 p-2 shadow"
             >
               <li>
-                <a href="/" className="font-medium text-lg">
+                <a href="/pricing" className="font-medium text-lg">
                   Precios
                 </a>
               </li>
