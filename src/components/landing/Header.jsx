@@ -60,8 +60,8 @@ export default function Header() {
                 </a>
               </li>
               <li>
-                <a href="/" className="font-medium text-lg">
-                  Cuenta
+                <a href="/login" className="font-medium text-lg">
+                  Acceder
                 </a>
               </li>
             </ul>
