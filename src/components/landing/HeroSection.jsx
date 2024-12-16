@@ -75,7 +75,7 @@ export default function HeroSection() {
           <p className="text-sm sm:text-base md:text-lg font-light">
             Únete a más de 12 restaurantes
             <span className="text-teal-600 font-medium"> que ya confían </span>
-            en DigiMenu.
+            en DigiPage.
           </p>
         </div>
 

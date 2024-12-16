@@ -13,9 +13,9 @@ export default function Sell() {
             {""}, de manera optimizada, y para todo el mundo
           </h1>
           <p className="text-start text-base sm:text-md md:text-lg text-gray-700">
-            Con DigiMenu puedes mostrarle a tus clientes tu menú. Tendrás un QR
-            para imprimir que siempre te llevará a tu propia página web. Esta
-            página web tendrá tu menu digital y tu información de empresa:
+            Con DigiPage puedes mostrarle a tus clientes tu restaurante. Tendrás
+            un QR para imprimir que siempre te llevará a tu propia página web.
+            Esta página web tendrá tu menu digital y tu información de empresa:
             Número de teléfono, redes sociales y google maps (business).
           </p>
         </div>

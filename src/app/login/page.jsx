@@ -17,7 +17,8 @@ export default function Login() {
       const cookies = parseCookies();
       const token = cookies.token;
 
-      if (token) {
+      console.log(token);
+      if (token && token !== "null") {
         router.push("/admin");
       }
     };
@@ -27,7 +28,7 @@ export default function Login() {
 
   useEffect(() => {
     if (pathname?.startsWith("/login")) {
-      document.title = "DigiMenu - iniciar sesión";
+      document.title = "DigiPage - iniciar sesión";
     }
   }, [pathname]);
 

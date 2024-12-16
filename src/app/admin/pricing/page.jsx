@@ -1,3 +1,5 @@
+"use client";
+
 import Pricing from "@/components/princing/Pricing";
 
 export default function PricingPage() {

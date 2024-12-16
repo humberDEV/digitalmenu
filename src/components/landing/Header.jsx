@@ -10,7 +10,7 @@ export default function Header() {
             <span className="font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-indigo-500">
               Digi
             </span>
-            <span className="text-gray-800 font-bold">Menu</span>
+            <span className="text-gray-800 font-bold">Page</span>
           </a>
         </div>
 

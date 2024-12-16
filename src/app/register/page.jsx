@@ -29,7 +29,7 @@ export default function Register() {
 
   useEffect(() => {
     if (pathname.startsWith("/register")) {
-      document.title = "DigiMenu - Nuevo usuario";
+      document.title = "DigiPage - Nuevo usuario";
     }
   }, [pathname]);
 
@@ -73,7 +73,7 @@ export default function Register() {
     });
 
     if (response.ok) {
-      setCookie(null, "token", data.token, { path: "/" });
+      setCookie(null, "token", response.token, { path: "/" });
       toast.success("¡Registro exitoso!");
       router.push("/admin");
     } else {
