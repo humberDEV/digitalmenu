@@ -7,3 +7,6 @@ typechain
 package-lock.json
 
 .next
+
+.env
+.env.local
