@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Restaurant from "../../../../models/Company";
-import { setCookie } from "nookies";
+import connectDB from "../../../../lib/mongodb";
+
+await connectDB();
 
 const handler = async (req, res) => {
   if (req.method === "POST") {

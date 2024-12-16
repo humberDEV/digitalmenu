@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../../../../models/Company";
+import connectDB from "../../../../lib/mongodb";
 
+await connectDB();
 let loginAttempts = {};
 
 const MAX_ATTEMPTS = 7;
