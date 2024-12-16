@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Header() {
   return (
-    <header className="p-4 w-full">
+    <header className="p-2 w-full">
       <div className="max-w-screen-2xl flex justify-between items-center p-4 mx-auto">
         {/* Logo */}
         <div className="text-3xl font-bold flex items-center space-x-1 hover:scale-105 transition-transform">

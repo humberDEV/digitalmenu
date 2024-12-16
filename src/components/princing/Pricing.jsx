@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const pricing = [
   {
@@ -21,6 +22,7 @@ const pricing = [
       "Soporte prioritario",
       "Reportes avanzados",
     ],
+    paymentLink: "https://buy.stripe.com/test_XXXXXXX", // Enlace de pago de Stripe para el plan Básico
   },
   {
     title: "Personalizado",
@@ -34,6 +36,7 @@ const pricing = [
       "Soporte prioritario",
       "Reportes avanzados",
     ],
+    paymentLink: "https://buy.stripe.com/test_YYYYYYY", // Enlace de pago de Stripe para el plan Personalizado
   },
 ];
 
@@ -56,6 +59,7 @@ const anualPricing = [
       "Soporte prioritario",
       "Reportes avanzados",
     ],
+    paymentLink: "https://buy.stripe.com/test_ZZZZZZZ", // Enlace de pago de Stripe para el plan Básico anual
   },
   {
     title: "Personalizado",
@@ -69,48 +73,25 @@ const anualPricing = [
       "Soporte prioritario",
       "Reportes avanzados",
     ],
+    paymentLink: "https://buy.stripe.com/test_AAAAAAA", // Enlace de pago de Stripe para el plan Personalizado anual
   },
 ];
-
-function CountdownTimer() {
-  const calculateTimeLeft = () => {
-    const targetDate = new Date("2025-01-31T23:59:59");
-    const now = new Date();
-    const difference = targetDate - now;
-
-    let timeLeft = {};
-
-    if (difference > 0) {
-      timeLeft = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    }
-    return timeLeft;
-  };
-
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <div className="text-lg font-semibold">
-      {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
-    </div>
-  );
-}
 
 export default function Pricing() {
   const [isAnnual, setIsAnnual] = useState(false);
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+
   const currentPricing = isAnnual ? anualPricing : pricing;
+
+  const handleSelectPlan = (plan) => () => {
+    if (isAuthenticated) {
+      window.open(plan.paymentLink, "_blank");
+    } else {
+      router.push("/register");
+    }
+  };
 
   return (
     <div className="bg-light py-10">
@@ -136,7 +117,7 @@ export default function Pricing() {
           {currentPricing.map((plan, index) => (
             <div
               key={index}
-              className="custom-card bg-white shadow-xl border border-gray-200 rounded-3xl p-8 hover:shadow-2xl transition duration-300"
+              className="bg-white shadow-xl border border-gray-200 rounded-3xl p-8 hover:shadow-2xl transition duration-300"
             >
               <h3 className="text-2xl font-bold text-dark mb-2">
                 {plan.title}
@@ -172,24 +153,14 @@ export default function Pricing() {
                   </li>
                 ))}
               </ul>
-              <button className="custom-btn mt-6 w-full rounded-full py-3 font-medium text-white transition">
+              <button
+                className="btn btn-primary mt-6 w-full rounded-full py-3 font-medium text-white transition"
+                onClick={handleSelectPlan(plan)}
+              >
                 Elegir {plan.title}
               </button>
             </div>
           ))}
-        </div>
-
-        {/* Promoción con timer */}
-        <div className="bg-primary text-white mt-10 py-6 rounded-3xl shadow-lg">
-          <h3 className="text-2xl font-bold">¡Oferta limitada!</h3>
-          <p className="mt-2">
-            Suscríbete antes del{" "}
-            <span className="font-bold">31 de enero de 2025</span> y obtén{" "}
-            <span className="font-bold">un mes gratis</span>.
-          </p>
-          <div className="mt-4">
-            <CountdownTimer />
-          </div>
         </div>
       </div>
     </div>
