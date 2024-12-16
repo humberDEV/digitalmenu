@@ -18,7 +18,6 @@ export default function Register() {
     const checkToken = async () => {
       const cookies = parseCookies();
       const token = cookies.token;
-      console.log("token:", token);
 
       if (token) {
         router.push("/admin");

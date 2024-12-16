@@ -16,7 +16,6 @@ export default function Login() {
     const checkToken = async () => {
       const cookies = parseCookies();
       const token = cookies.token;
-      console.log("token:", token);
 
       if (token) {
         router.push("/admin");
@@ -52,7 +51,6 @@ export default function Login() {
       const data = await response.json();
       toast.success("¡Inicio de sesión exitoso!");
 
-      console.log("data:", data);
       setCookie(null, "token", data.token, { path: "/" });
 
       router.push("/admin");
