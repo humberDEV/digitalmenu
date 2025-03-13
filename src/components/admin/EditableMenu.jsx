@@ -1,0 +1,216 @@
+"use client";
+
+import ProductCard from "./ProductCard";
+import "@/styles/admin/EditableMenu.css";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { useState } from "react";
+
+import AddCategoryModal from "./AddCategoryModal";
+import AddProductModal from "./AddProductModal";
+
+const DraggableProduct = ({
+  product,
+  index,
+  moveProduct,
+  categoryId,
+  isEditing,
+  saveProduct,
+}) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: "PRODUCT",
+    item: { id: product.id, index, categoryId },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [, drop] = useDrop({
+    accept: "PRODUCT",
+    hover: (draggedItem) => {
+      if (
+        draggedItem.id !== product.id &&
+        draggedItem.categoryId === categoryId
+      ) {
+        moveProduct(
+          draggedItem.id,
+          categoryId,
+          categoryId,
+          draggedItem.index,
+          index
+        );
+        draggedItem.index = index;
+      }
+    },
+  });
+
+  return (
+    <div
+      ref={(node) => drag(drop(node))}
+      className="draggable"
+      style={{ opacity: isDragging ? 0.8 : 1 }}
+    >
+      <ProductCard
+        product={product}
+        isEditing={isEditing}
+        saveProduct={saveProduct}
+      />
+    </div>
+  );
+};
+
+const DroppableCategory = ({ category, children }) => {
+  const [, drop] = useDrop({
+    accept: "PRODUCT",
+    drop: () => ({ categoryId: category.id }),
+  });
+
+  return (
+    <div className="p-2 mt-10">
+      <h2 className="text-3xl font-bold pb-2">{category.name}</h2>
+      <div ref={drop} className="border border-gray-300 p-2 ">
+        <div className="flex flex-col gap-2">{children}</div>
+      </div>
+    </div>
+  );
+};
+
+export default function EditableMenu({ isEditing, saveProduct }) {
+  const [categories, setCategories] = useState([
+    {
+      id: 1,
+      name: "Hamburguesas",
+      products: [
+        {
+          id: 101,
+          name: "Hamburguesa de pollo",
+          price: 8.9,
+          description: "Con queso, cebolla y cilantro",
+        },
+        {
+          id: 102,
+          name: "Hamburguesa de carne",
+          price: 9.9,
+          description: "Con queso, cebolla y cilantro",
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: "Papas",
+      products: [],
+    },
+  ]);
+
+  const moveProduct = (
+    productId,
+    sourceCategoryId,
+    targetCategoryId,
+    sourceIndex,
+    targetIndex
+  ) => {
+    setCategories((prevCategories) => {
+      const newCategories = [...prevCategories];
+
+      const sourceCategory = newCategories.find(
+        (c) => c.id === sourceCategoryId
+      );
+      const targetCategory = newCategories.find(
+        (c) => c.id === targetCategoryId
+      );
+
+      if (!sourceCategory || !targetCategory) return newCategories;
+
+      const productIndex = sourceCategory.products.findIndex(
+        (p) => p.id === productId
+      );
+      if (productIndex === -1) return newCategories;
+
+      const [productToMove] = sourceCategory.products.splice(productIndex, 1);
+
+      if (sourceCategoryId === targetCategoryId) {
+        // Movimiento dentro de la misma categoría
+        targetCategory.products.splice(targetIndex, 0, productToMove);
+      } else {
+        // Movimiento a otra categoría
+        targetCategory.products.push(productToMove);
+      }
+
+      return [...newCategories];
+    });
+  };
+
+  const [addCategoryModal, setAddCategoryModal] = useState(false);
+  const [addProductModal, setAddProductModal] = useState(false);
+
+  const addCategory = (category) => {
+    setCategories([...categories, category]);
+  };
+
+  const addProduct = (product) => {
+    // Buscar la categoría a la que pertenece el producto
+    console.log(typeof product.categoryId, product.categoryId, "producto");
+    console.log(
+      categories.map((c) => typeof c.id),
+      categories,
+      "categorias"
+    );
+    const category = categories.findIndex((c) => c.id === product.categoryId);
+
+    if (category !== -1) {
+      console.log(categories[category], "se añade el producto", product);
+      categories[category].products.push(product);
+    } else {
+      console.log("No se encontró la categoría");
+    }
+  };
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div>
+        {isEditing && (
+          <div className="flex flex-row gap-2 mt-4">
+            <button
+              className="btn btn-neutral"
+              onClick={() => setAddCategoryModal(true)}
+            >
+              + Agregar categoría
+            </button>
+            <button
+              className="btn btn-neutral"
+              onClick={() => setAddProductModal(true)}
+            >
+              + Agregar producto
+            </button>
+          </div>
+        )}
+        {categories.map((category) => (
+          <DroppableCategory key={category.id} category={category}>
+            {category?.products?.map((product, index) => (
+              <DraggableProduct
+                key={product.id}
+                product={product}
+                index={index}
+                categoryId={category.id}
+                moveProduct={moveProduct}
+                isEditing={isEditing}
+                saveProduct={saveProduct}
+              />
+            ))}
+          </DroppableCategory>
+        ))}
+      </div>
+      <AddCategoryModal
+        isOpen={addCategoryModal}
+        addCategory={addCategory}
+        onClose={() => setAddCategoryModal(false)}
+      />
+      <AddProductModal
+        isOpen={addProductModal}
+        categoryList={categories}
+        addProduct={addProduct}
+        onClose={() => setAddProductModal(false)}
+      />
+    </DndProvider>
+  );
+}

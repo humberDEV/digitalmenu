@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
   connectDB();
 
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <body className={`${poppins.className} antialiased`}>
         {" "}
         <Toaster richColors position="top-center" />

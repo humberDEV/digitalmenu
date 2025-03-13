@@ -1,0 +1,8 @@
+.draggable {
+  transition: transform 0.1s ease-in-out;
+  cursor: move;
+}
+
+.draggable:hover {
+  transform: scale(0.99);
+}

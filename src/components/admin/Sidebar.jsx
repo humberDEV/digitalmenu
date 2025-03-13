@@ -70,7 +70,7 @@ export default function Sidebar() {
             <Link
               key={item.label}
               href={item.href}
-              className="flex items-center p-4 hover:bg-gray-700 transition-colors"
+              className="flex items-center p-4 hover:bg-gray-700 transition-all duration-100"
             >
               <span>{item.icon}</span>
               {!collapsed && <span className="ml-4">{item.label}</span>}
