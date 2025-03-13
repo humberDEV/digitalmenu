@@ -148,21 +148,13 @@ export default function EditableMenu({ isEditing, saveProduct }) {
   };
 
   const addProduct = (product) => {
-    // Buscar la categoría a la que pertenece el producto
-    console.log(typeof product.categoryId, product.categoryId, "producto");
-    console.log(
-      categories.map((c) => typeof c.id),
-      categories,
-      "categorias"
+    setCategories((prevCategories) =>
+      prevCategories.map((c) =>
+        Number(c.id) === Number(product.categoryId)
+          ? { ...c, products: [...c.products, product] }
+          : c
+      )
     );
-    const category = categories.findIndex((c) => c.id === product.categoryId);
-
-    if (category !== -1) {
-      console.log(categories[category], "se añade el producto", product);
-      categories[category].products.push(product);
-    } else {
-      console.log("No se encontró la categoría");
-    }
   };
 
   return (
