@@ -11,7 +11,7 @@ export default function Sidebar() {
     <>
       <div
         className={`hidden md:block bg-slate-900 text-white ${
-          collapsed ? "w-16" : "w-64"
+          collapsed ? "w-16" : "w-52"
         } transition-all duration-300 h-screen flex flex-col`}
       >
         {/* Encabezado */}

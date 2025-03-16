@@ -4,24 +4,31 @@ import { useState } from "react";
 
 export default function AddCategoryModal({ open, onClose, addCategory }) {
   const [categoryName, setCategoryName] = useState("");
-  const [categoryDescription, setCategoryDescription] = useState("");
-  const [categoryPrice, setCategoryPrice] = useState(0);
+  const [error, setError] = useState("");
 
-  const handleCategoryNameChange = (e) => setCategoryName(e.target.value);
-  const handleCategoryDescriptionChange = (e) =>
-    setCategoryDescription(e.target.value);
-  const handleCategoryPriceChange = (e) => setCategoryPrice(e.target.value);
+  const handleCategoryNameChange = (e) => {
+    const value = e.target.value;
+    setCategoryName(value);
 
-  const currency = "USD";
+    if (value.trim() === "") {
+      setError("El nombre de la categoría es obligatorio.");
+    } else if (value.length < 3) {
+      setError("El nombre debe tener al menos 3 caracteres.");
+    } else {
+      setError("");
+    }
+  };
 
   const handleAddCategory = () => {
-    addCategory({
-      id: Date.now(),
-      name: categoryName,
-      price: categoryPrice,
-      description: categoryDescription,
-    });
-    onClose();
+    if (categoryName.trim() && categoryName.length >= 3) {
+      addCategory({
+        id: Date.now(),
+        name: categoryName,
+      });
+
+      setCategoryName("");
+      onClose();
+    }
   };
 
   return (
@@ -46,12 +53,15 @@ export default function AddCategoryModal({ open, onClose, addCategory }) {
           <input
             id="categoryName"
             type="text"
-            className="input input-bordered w-full"
+            className={`input input-bordered w-full ${
+              error ? "input-error" : ""
+            }`}
             placeholder="Ej: Hamburguesas"
             value={categoryName}
             onChange={handleCategoryNameChange}
             autoFocus
           />
+          {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
         </div>
 
         {/* Botones */}
@@ -59,7 +69,11 @@ export default function AddCategoryModal({ open, onClose, addCategory }) {
           <button onClick={onClose} className="btn btn-error">
             Cerrar
           </button>
-          <button className="btn btn-success" onClick={handleAddCategory}>
+          <button
+            className="btn btn-success"
+            onClick={handleAddCategory}
+            disabled={!categoryName.trim() || categoryName.length < 3}
+          >
             Agregar
           </button>
         </div>

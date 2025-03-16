@@ -10,25 +10,92 @@ export default function AddProductModal({
 }) {
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
-  const [productPrice, setProductPrice] = useState(0);
+  const [productPrice, setProductPrice] = useState("");
   const [productCategory, setProductCategory] = useState("");
-
-  const handleProductNameChange = (e) => setProductName(e.target.value);
-  const handleProductDescriptionChange = (e) =>
-    setProductDescription(e.target.value);
-  const handleProductPriceChange = (e) => setProductPrice(e.target.value);
-  const handleProductCategoryChange = (e) => setProductCategory(e.target.value);
+  const [errors, setErrors] = useState({});
 
   const currency = "USD";
 
+  // Función para validar un solo campo
+  const validateField = (name, value) => {
+    let error = "";
+
+    switch (name) {
+      case "productName":
+        if (!value.trim()) error = "El nombre es obligatorio.";
+        break;
+      case "productCategory":
+        if (!value || value === "") error = "Selecciona una categoría válida.";
+        break;
+      case "productPrice":
+        if (!value || isNaN(value) || parseFloat(value) <= 0) {
+          error = "Ingresa un precio válido.";
+        }
+        break;
+      case "productDescription":
+        if (!value.trim()) error = "La descripción es obligatoria.";
+        break;
+      default:
+        break;
+    }
+
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  // Manejadores de cambio con validación en tiempo real
+  const handleProductNameChange = (e) => {
+    const value = e.target.value;
+    setProductName(value);
+    validateField("productName", value);
+  };
+
+  const handleProductDescriptionChange = (e) => {
+    const value = e.target.value;
+    setProductDescription(value);
+    validateField("productDescription", value);
+  };
+
+  const handleProductPriceChange = (e) => {
+    const value = e.target.value;
+    setProductPrice(value);
+    validateField("productPrice", value);
+  };
+
+  const handleProductCategoryChange = (e) => {
+    const value = e.target.value;
+    setProductCategory(value);
+    validateField("productCategory", value);
+  };
+
+  // Verifica si hay errores
+  const isFormValid = () => {
+    return (
+      Object.values(errors).every((error) => error === "") &&
+      productName.trim() &&
+      productDescription.trim() &&
+      productCategory &&
+      productPrice &&
+      !isNaN(productPrice) &&
+      parseFloat(productPrice) > 0
+    );
+  };
+
   const handleAddProduct = () => {
+    if (!isFormValid()) return;
+
     addProduct({
       id: Date.now(),
       name: productName,
-      price: productPrice,
+      price: parseFloat(productPrice),
       description: productDescription,
       categoryId: parseInt(productCategory),
     });
+
+    setProductName("");
+    setProductDescription("");
+    setProductPrice("");
+    setProductCategory("");
+    setErrors({});
     onClose();
   };
 
@@ -55,11 +122,14 @@ export default function AddProductModal({
             id="productName"
             type="text"
             className="input input-bordered w-full"
-            placeholder="Ej: Café Espresso"
             value={productName}
             onChange={handleProductNameChange}
+            placeholder="Ej: Café Espresso"
             autoFocus
           />
+          {errors.productName && (
+            <p className="text-red-500 text-sm mt-1">{errors.productName}</p>
+          )}
         </div>
 
         {/* Selección de categoría */}
@@ -75,6 +145,7 @@ export default function AddProductModal({
             className="select select-bordered w-full"
             value={productCategory}
             onChange={handleProductCategoryChange}
+            disabled={categoryList.length === 0}
           >
             <option value="">Selecciona una categoría</option>
             {categoryList.map((category) => (
@@ -83,6 +154,11 @@ export default function AddProductModal({
               </option>
             ))}
           </select>
+          {errors.productCategory && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.productCategory}
+            </p>
+          )}
         </div>
 
         {/* Precio del producto */}
@@ -100,9 +176,13 @@ export default function AddProductModal({
               className="input input-bordered w-1/2"
               value={productPrice}
               onChange={handleProductPriceChange}
+              min="0"
             />
             <span className="text-sm text-gray-500">{currency}</span>
           </div>
+          {errors.productPrice && (
+            <p className="text-red-500 text-sm mt-1">{errors.productPrice}</p>
+          )}
         </div>
 
         {/* Descripción del producto */}
@@ -116,10 +196,15 @@ export default function AddProductModal({
           <textarea
             id="productDescription"
             className="input input-bordered w-full h-24"
-            placeholder="Ej: Café negro fuerte con un toque de caramelo"
             value={productDescription}
             onChange={handleProductDescriptionChange}
+            placeholder="Ej: Café negro fuerte con un toque de caramelo"
           />
+          {errors.productDescription && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.productDescription}
+            </p>
+          )}
         </div>
 
         {/* Botones */}
@@ -127,7 +212,11 @@ export default function AddProductModal({
           <button onClick={onClose} className="btn btn-error">
             Cerrar
           </button>
-          <button className="btn btn-success" onClick={handleAddProduct}>
+          <button
+            className="btn btn-success"
+            onClick={handleAddProduct}
+            disabled={!isFormValid() || categoryList.length === 0}
+          >
             Agregar
           </button>
         </div>

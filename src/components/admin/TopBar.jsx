@@ -6,7 +6,18 @@ export default function TopBar({ isEditing, setIsEditing }) {
   return (
     <>
       <div className="flex justify-between items-center bg-gray-200 p-4 rounded-br-md">
-        <h1 className="text-2xl font-bold">Configura tu menú</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold">Configura tu menú</h1>
+          {isEditing && (
+            <div
+              className="tooltip tooltip-bottom"
+              data-tip="Debes guardar los cambios para que se apliquen en tu web, si no, se perderán"
+            >
+              <div className="badge badge-warning text-xs">Editando</div>
+            </div>
+          )}
+        </div>
+
         <button
           className={`btn ${
             isEditing
