@@ -4,60 +4,10 @@ import ProductCard from "./ProductCard";
 import "@/styles/admin/EditableMenu.css";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import AddCategoryModal from "./AddCategoryModal";
 import AddProductModal from "./AddProductModal";
-
-const DraggableProduct = ({
-  product,
-  index,
-  moveProduct,
-  categoryId,
-  isEditing,
-  saveProduct,
-}) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: "PRODUCT",
-    item: { id: product.id, index, categoryId },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const [, drop] = useDrop({
-    accept: "PRODUCT",
-    hover: (draggedItem) => {
-      if (
-        draggedItem.id !== product.id &&
-        draggedItem.categoryId === categoryId
-      ) {
-        moveProduct(
-          draggedItem.id,
-          categoryId,
-          categoryId,
-          draggedItem.index,
-          index
-        );
-        draggedItem.index = index;
-      }
-    },
-  });
-
-  return (
-    <div
-      ref={(node) => drag(drop(node))}
-      className="draggable"
-      style={{ opacity: isDragging ? 0.8 : 1 }}
-    >
-      <ProductCard
-        product={product}
-        isEditing={isEditing}
-        saveProduct={saveProduct}
-      />
-    </div>
-  );
-};
 
 const DroppableCategory = ({ category, children }) => {
   const [, drop] = useDrop({
@@ -102,6 +52,9 @@ export default function EditableMenu({ isEditing, saveProduct }) {
     },
   ]);
 
+  const [addCategoryModal, setAddCategoryModal] = useState(false);
+  const [addProductModal, setAddProductModal] = useState(false);
+
   const moveProduct = (
     productId,
     sourceCategoryId,
@@ -140,18 +93,83 @@ export default function EditableMenu({ isEditing, saveProduct }) {
     });
   };
 
-  const [addCategoryModal, setAddCategoryModal] = useState(false);
-  const [addProductModal, setAddProductModal] = useState(false);
+  const DraggableProduct = ({
+    product,
+    index,
+    moveProduct,
+    categoryId,
+    isEditing,
+    saveProduct,
+  }) => {
+    const [isDragging, setIsDragging] = useState(false);
+    const [animate, setAnimate] = useState(false); // Estado para animación "pop"
+    const [{ isDragging: dragState }, drag] = useDrag({
+      type: "PRODUCT",
+      item: { id: product.id, index, categoryId },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+      end: () => {
+        setAnimate(true); // Activar la animación cuando se suelta
+      },
+    });
+
+    const [, drop] = useDrop({
+      accept: "PRODUCT",
+      hover: (draggedItem) => {
+        if (
+          draggedItem.id !== product.id &&
+          draggedItem.categoryId === categoryId
+        ) {
+          moveProduct(
+            draggedItem.id,
+            categoryId,
+            categoryId,
+            draggedItem.index,
+            index
+          );
+          draggedItem.index = index;
+        }
+      },
+    });
+
+    useEffect(() => {
+      if (animate) {
+        const timeout = setTimeout(() => {
+          setAnimate(false); // Desactivar la animación después de un breve periodo
+        }, 300); // Duración de la animación en milisegundos
+        return () => clearTimeout(timeout);
+      }
+    }, [animate]);
+
+    return (
+      <div
+        ref={(node) => drag(drop(node))}
+        className={`draggable ${animate ? "animate-pop" : ""}`}
+        style={{ opacity: dragState ? 0.8 : 1 }}
+      >
+        <ProductCard
+          product={product}
+          isEditing={isEditing}
+          saveProduct={saveProduct}
+          deleteProduct={() => setDeleteProductModal(true)}
+        />
+      </div>
+    );
+  };
 
   const addCategory = (category) => {
-    setCategories([...categories, category]);
+    setCategories([
+      ...categories,
+      { ...category, products: category.products || [] },
+    ]);
   };
 
   const addProduct = (product) => {
     setCategories((prevCategories) =>
       prevCategories.map((c) =>
         Number(c.id) === Number(product.categoryId)
-          ? { ...c, products: [...c.products, product] }
+          ? { ...c, products: [...(c.products || []), product] }
           : c
       )
     );
@@ -193,12 +211,12 @@ export default function EditableMenu({ isEditing, saveProduct }) {
         ))}
       </div>
       <AddCategoryModal
-        isOpen={addCategoryModal}
+        open={addCategoryModal}
         addCategory={addCategory}
         onClose={() => setAddCategoryModal(false)}
       />
       <AddProductModal
-        isOpen={addProductModal}
+        open={addProductModal}
         categoryList={categories}
         addProduct={addProduct}
         onClose={() => setAddProductModal(false)}

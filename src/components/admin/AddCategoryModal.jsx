@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function AddCategoryModal({ isOpen, onClose, addCategory }) {
+export default function AddCategoryModal({ open, onClose, addCategory }) {
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
   const [categoryPrice, setCategoryPrice] = useState(0);
@@ -27,7 +27,7 @@ export default function AddCategoryModal({ isOpen, onClose, addCategory }) {
   return (
     <dialog
       id="addCategoryModal"
-      className={`modal ${isOpen ? "modal-open" : ""}`}
+      className={`modal ${open ? "modal-open" : ""}`}
       onClose={onClose}
     >
       <div className="modal-box bg-white p-6 rounded-lg shadow-lg">

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 export default function AddProductModal({
-  isOpen,
+  open,
   categoryList,
   onClose,
   addProduct,
@@ -35,7 +35,7 @@ export default function AddProductModal({
   return (
     <dialog
       id="addProductModal"
-      className={`modal ${isOpen ? "modal-open" : ""}`}
+      className={`modal ${open ? "modal-open" : ""}`}
       onClose={onClose}
     >
       <div className="modal-box bg-white p-6 rounded-lg shadow-lg">
