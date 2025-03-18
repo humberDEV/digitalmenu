@@ -7,6 +7,10 @@ export default function ProductCard({
   deleteProduct,
   firstProduct,
   lastProduct,
+  setCategories,
+  category,
+  moveProductDown,
+  moveProductUp,
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -18,6 +22,10 @@ export default function ProductCard({
     closeDialogConfirm();
   };
 
+  const [tempName, setTempName] = useState(product.name);
+  const [tempPrice, setTempPrice] = useState(product.price);
+  const [tempDescription, setTempDescription] = useState(product.description);
+
   return (
     <div className="flex flex-row">
       {isEditing && (
@@ -25,6 +33,7 @@ export default function ProductCard({
           <div
             className="btn btn-sm w-10 h-10"
             disabled={product === firstProduct}
+            onClick={() => moveProductUp(category.id, product.id)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -44,6 +53,7 @@ export default function ProductCard({
           <div
             className="btn btn-sm w-10 h-10"
             disabled={product === lastProduct}
+            onClick={() => moveProductDown(category.id, product.id)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -64,10 +74,82 @@ export default function ProductCard({
       )}
       <div className="flex-1 border border-gray-300 rounded-md p-4 mt-2 mr-2 shadow-sm bg-gray-100">
         <div className="flex flex-row justify-between">
-          <h2 className="text-2xl font-bold">{product.name}</h2>
-          <p className="text-gray-500 font-bold text-xl">{product.price}</p>
+          {isEditing ? (
+            <input
+              type="text"
+              className="text-xl font-bold border p-1 rounded flex-1 mr-2"
+              value={tempName}
+              onChange={(e) => setTempName(e.target.value)}
+              onBlur={() => {
+                setCategories((prev) =>
+                  prev.map((c) =>
+                    c.id === category.id
+                      ? {
+                          ...c,
+                          products: c.products.map((p) =>
+                            p.id === product.id ? { ...p, name: tempName } : p
+                          ),
+                        }
+                      : c
+                  )
+                );
+              }}
+            />
+          ) : (
+            <h2 className="text-xl font-bold">{product.name}</h2>
+          )}
+
+          {isEditing ? (
+            <input
+              type="number"
+              className="text-gray-500 font-bold text-xl border p-1 rounded w-20"
+              value={tempPrice}
+              onChange={(e) => setTempPrice(e.target.value)}
+              onBlur={() => {
+                setCategories((prev) =>
+                  prev.map((c) =>
+                    c.id === category.id
+                      ? {
+                          ...c,
+                          products: c.products.map((p) =>
+                            p.id === product.id ? { ...p, price: tempPrice } : p
+                          ),
+                        }
+                      : c
+                  )
+                );
+              }}
+            />
+          ) : (
+            <p className="text-gray-500 font-bold text-xl">{product.price}€</p>
+          )}
         </div>
-        <p className="text-gray-800">{product.description}</p>
+
+        {isEditing ? (
+          <textarea
+            className="text-gray-800 border p-1 rounded w-full mt-2"
+            value={tempDescription}
+            onChange={(e) => setTempDescription(e.target.value)}
+            onBlur={() => {
+              setCategories((prev) =>
+                prev.map((c) =>
+                  c.id === category.id
+                    ? {
+                        ...c,
+                        products: c.products.map((p) =>
+                          p.id === product.id
+                            ? { ...p, description: tempDescription }
+                            : p
+                        ),
+                      }
+                    : c
+                )
+              );
+            }}
+          />
+        ) : (
+          <p className="text-gray-800">{product.description}</p>
+        )}
       </div>
       {isEditing && (
         <div

@@ -13,7 +13,9 @@ export default function TopBar({ isEditing, setIsEditing }) {
               className="tooltip tooltip-bottom"
               data-tip="Debes guardar los cambios para que se apliquen en tu web, si no, se perderán"
             >
-              <div className="badge badge-warning text-xs">Editando</div>
+              <div className="badge badge-warning text-xs">
+                Editando: cambios sin guardar
+              </div>
             </div>
           )}
         </div>

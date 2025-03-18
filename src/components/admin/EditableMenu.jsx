@@ -5,6 +5,8 @@ import "@/styles/admin/EditableMenu.css";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
+import { useState } from "react";
+
 import AddCategoryModal from "./AddCategoryModal";
 import AddProductModal from "./AddProductModal";
 import DeleteProductModal from "./DeleteProductModal";
@@ -13,6 +15,7 @@ import useMenuLogic from "./menuLogics";
 export default function EditableMenu({ isEditing }) {
   const {
     categories,
+    setCategories,
     addCategoryModal,
     setAddCategoryModal,
     addProductModal,
@@ -27,6 +30,8 @@ export default function EditableMenu({ isEditing }) {
     deleteProduct,
     moveCategoryDown,
     moveCategoryUp,
+    moveProductDown,
+    moveProductUp,
   } = useMenuLogic();
 
   const DroppableCategory = ({
@@ -35,10 +40,29 @@ export default function EditableMenu({ isEditing }) {
     onDeleteCategory,
     isEditing,
   }) => {
+    const [tempName, setTempName] = useState(category.name);
+
     return (
       <div className="p-2 mt-10">
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold">{category.name}</h2>
+          {/* convertimos name en un campo al editar */}
+          {isEditing ? (
+            <input
+              type="text"
+              className="input input-bordered font-bold text-3xl"
+              value={tempName}
+              onChange={(e) => setTempName(e.target.value)}
+              onBlur={() => {
+                setCategories((prev) =>
+                  prev.map((c) =>
+                    c.id === category.id ? { ...c, name: tempName } : c
+                  )
+                );
+              }}
+            />
+          ) : (
+            <h2 className="text-3xl font-bold">{category.name}</h2>
+          )}
           {isEditing && (
             <button
               className="btn-xs"
@@ -150,6 +174,10 @@ export default function EditableMenu({ isEditing }) {
                 deleteProduct={deleteProduct}
                 firstProduct={category.products[0]}
                 lastProduct={category.products[category.products.length - 1]}
+                setCategories={setCategories}
+                category={category}
+                moveProductDown={moveProductDown}
+                moveProductUp={moveProductUp}
               />
             ))}
           </DroppableCategory>

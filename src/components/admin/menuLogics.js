@@ -66,7 +66,6 @@ export default function useMenuLogic() {
 
   // 📌 Mover una categoría abajo
   const moveCategoryDown = (categoryId) => {
-    console.log("moveCategoryDown");
     setCategories((prev) => {
       const index = prev.findIndex((c) => c.id === categoryId);
       if (index === prev.length - 1) return prev;
@@ -82,7 +81,6 @@ export default function useMenuLogic() {
 
   // 📌 Mover una categoría arriba
   const moveCategoryUp = (categoryId) => {
-    console.log("moveCategoryUp", categoryId);
     setCategories((prev) => {
       const index = prev.findIndex((c) => c.id === categoryId);
       if (index === 0) return prev;
@@ -94,6 +92,46 @@ export default function useMenuLogic() {
       ];
       return newCategories;
     });
+  };
+
+  // 📌 Mover un producto abajo
+  const moveProductDown = (categoryId, productId) => {
+    setCategories((prev) =>
+      prev.map((c) => {
+        if (c.id !== categoryId) return c;
+
+        const index = c.products.findIndex((p) => p.id === productId);
+        if (index === -1 || index === c.products.length - 1) return c; // Si no se encuentra o es el último, no hacer nada
+
+        const newProducts = [...c.products];
+        [newProducts[index], newProducts[index + 1]] = [
+          newProducts[index + 1],
+          newProducts[index],
+        ];
+
+        return { ...c, products: newProducts };
+      })
+    );
+  };
+
+  // 📌 Mover un producto arriba
+  const moveProductUp = (categoryId, productId) => {
+    setCategories((prev) =>
+      prev.map((c) => {
+        if (c.id !== categoryId) return c;
+
+        const index = c.products.findIndex((p) => p.id === productId);
+        if (index === -1 || index === 0) return c; // Si no se encuentra o es el primero, no hacer nada
+
+        const newProducts = [...c.products];
+        [newProducts[index], newProducts[index - 1]] = [
+          newProducts[index - 1],
+          newProducts[index],
+        ];
+
+        return { ...c, products: newProducts };
+      })
+    );
   };
 
   return {
@@ -113,5 +151,7 @@ export default function useMenuLogic() {
     deleteProduct,
     moveCategoryDown,
     moveCategoryUp,
+    moveProductDown,
+    moveProductUp,
   };
 }
