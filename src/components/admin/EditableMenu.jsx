@@ -10,30 +10,28 @@ import { useState } from "react";
 import AddCategoryModal from "./AddCategoryModal";
 import AddProductModal from "./AddProductModal";
 import DeleteProductModal from "./DeleteProductModal";
-import useMenuLogic from "./menuLogics";
 
-export default function EditableMenu({ isEditing }) {
-  const {
-    categories,
-    setCategories,
-    addCategoryModal,
-    setAddCategoryModal,
-    addProductModal,
-    setAddProductModal,
-    deleteCategoryModal,
-    setDeleteCategoryModal,
-    categoryToDelete,
-    openDeleteCategoryModal,
-    handleDeleteCategory,
-    addCategory,
-    addProduct,
-    deleteProduct,
-    moveCategoryDown,
-    moveCategoryUp,
-    moveProductDown,
-    moveProductUp,
-  } = useMenuLogic();
-
+export default function EditableMenu({
+  isEditing,
+  categories,
+  setCategories,
+  addCategoryModal,
+  setAddCategoryModal,
+  addProductModal,
+  setAddProductModal,
+  deleteCategoryModal,
+  setDeleteCategoryModal,
+  categoryToDelete,
+  openDeleteCategoryModal,
+  handleDeleteCategory,
+  addCategory,
+  addProduct,
+  deleteProduct,
+  moveCategoryDown,
+  moveCategoryUp,
+  moveProductDown,
+  moveProductUp,
+}) {
   const DroppableCategory = ({
     category,
     children,
@@ -51,6 +49,7 @@ export default function EditableMenu({ isEditing }) {
               type="text"
               className="input input-bordered font-bold text-3xl"
               value={tempName}
+              placeholder="Nombre de la categoría"
               onChange={(e) => setTempName(e.target.value)}
               onBlur={() => {
                 setCategories((prev) =>

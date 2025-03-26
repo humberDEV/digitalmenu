@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Restaurant from "../../../../models/Company";
+import Menu from "../../../../models/Menu";
 import connectDB from "../../../../lib/mongodb";
 
 await connectDB();
@@ -38,6 +39,23 @@ const handler = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: "7d" }
       );
+
+      try {
+        const existingMenu = await Menu.findOne({
+          restaurantId: newRestaurant._id,
+        });
+
+        if (!existingMenu) {
+          const defaultMenu = new Menu({
+            restaurantId: newRestaurant._id,
+            categories: [],
+          });
+
+          await defaultMenu.save();
+        }
+      } catch (error) {
+        console.error("Error al crear el menú:", error);
+      }
 
       res
         .status(201)

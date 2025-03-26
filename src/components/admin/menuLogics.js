@@ -1,23 +1,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { parseCookies } from "nookies";
 
-export default function useMenuLogic() {
-  const [categories, setCategories] = useState([
-    {
-      id: 1,
-      name: "Hamburguesas",
-      products: [
-        {
-          id: 101,
-          name: "Hamburguesa de pollo",
-          price: 8.9,
-          description: "Con queso, cebolla y cilantro",
-        },
-      ],
-    },
-    { id: 2, name: "Papas", products: [] },
-  ]);
-
+export default function useMenuLogic(setCategories) {
   const [addCategoryModal, setAddCategoryModal] = useState(false);
   const [addProductModal, setAddProductModal] = useState(false);
   const [deleteCategoryModal, setDeleteCategoryModal] = useState(false);
@@ -134,9 +119,74 @@ export default function useMenuLogic() {
     );
   };
 
+  // BACKEND API CALLS
+  // 📌 Función para guardar el menú
+  const saveMenu = async (categories) => {
+    console.log("Guardando menú:", categories);
+    try {
+      const cookies = parseCookies();
+      const token = cookies.token;
+
+      if (!token) {
+        alert("No tienes un token de autenticación.");
+        return;
+      }
+
+      // Verificar si categories es válido antes de enviarlo
+      if (!Array.isArray(categories)) {
+        console.error("Error: categories no es un array válido:", categories);
+        toast.error("Error: Los datos del menú son inválidos.");
+        return;
+      }
+
+      const response = await fetch("/api/menu/savemenu", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ categories }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error al guardar el menú.");
+      }
+
+      toast.success("Menú guardado correctamente!");
+    } catch (error) {
+      console.error(error);
+      toast.error(`Hubo un error: ${error.message}`);
+    }
+  };
+
+  // 📌 Función para traernos el menú
+  const getMenu = async () => {
+    const cookies = parseCookies();
+    const token = cookies.token;
+
+    if (!token) {
+      throw new Error("No se encontró el token de autenticación.");
+    }
+
+    const response = await fetch("/api/menu/getmenu", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al cargar el menú.");
+    }
+
+    const data = await response.json();
+    console.log("Menú cargado:", data.categories);
+    return data.categories || [];
+  };
+
   return {
-    categories,
-    setCategories,
     addCategoryModal,
     setAddCategoryModal,
     addProductModal,
@@ -153,5 +203,7 @@ export default function useMenuLogic() {
     moveCategoryUp,
     moveProductDown,
     moveProductUp,
+    saveMenu,
+    getMenu,
   };
 }

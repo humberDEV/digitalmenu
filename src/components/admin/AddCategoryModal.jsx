@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export default function AddCategoryModal({ open, onClose, addCategory }) {
   const [categoryName, setCategoryName] = useState("");
@@ -22,7 +23,7 @@ export default function AddCategoryModal({ open, onClose, addCategory }) {
   const handleAddCategory = () => {
     if (categoryName.trim() && categoryName.length >= 3) {
       addCategory({
-        id: Date.now(),
+        id: uuidv4(),
         name: categoryName,
       });
 

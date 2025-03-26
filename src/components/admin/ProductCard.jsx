@@ -22,9 +22,11 @@ export default function ProductCard({
     closeDialogConfirm();
   };
 
-  const [tempName, setTempName] = useState(product.name);
-  const [tempPrice, setTempPrice] = useState(product.price);
-  const [tempDescription, setTempDescription] = useState(product.description);
+  const [tempName, setTempName] = useState(product.name || "");
+  const [tempPrice, setTempPrice] = useState(product.price || 0);
+  const [tempDescription, setTempDescription] = useState(
+    product.description || ""
+  );
 
   return (
     <div className="flex flex-row">
@@ -79,6 +81,7 @@ export default function ProductCard({
               type="text"
               className="text-xl font-bold border p-1 rounded flex-1 mr-2"
               value={tempName}
+              placeholder="Nombre del producto"
               onChange={(e) => setTempName(e.target.value)}
               onBlur={() => {
                 setCategories((prev) =>
@@ -102,8 +105,9 @@ export default function ProductCard({
           {isEditing ? (
             <input
               type="number"
-              className="text-gray-500 font-bold text-xl border p-1 rounded w-20"
+              className="text-gray-500 font-bold text-xl border p-1 rounded w-24"
               value={tempPrice}
+              placeholder="Precio"
               onChange={(e) => setTempPrice(e.target.value)}
               onBlur={() => {
                 setCategories((prev) =>

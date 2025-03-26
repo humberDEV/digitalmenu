@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../../../../models/Company";
+import Menu from "../../../../models/Menu";
 import connectDB from "../../../../lib/mongodb";
 
 await connectDB();
@@ -52,11 +53,30 @@ const handler = async (req, res) => {
 
       loginAttempts[ip] = { attempts: 0, lastAttempt: Date.now() };
 
+      console.log("JWT_SECRET en este entorno:", process.env.JWT_SECRET);
+
       const token = jwt.sign(
         { userId: user._id, email: user.email },
         process.env.JWT_SECRET,
         { expiresIn: "7d" }
       );
+
+      try {
+        const existingMenu = await Menu.findOne({
+          restaurantId: user._id,
+        });
+
+        if (!existingMenu) {
+          const defaultMenu = new Menu({
+            restaurantId: user._id,
+            categories: [],
+          });
+
+          await defaultMenu.save();
+        }
+      } catch (error) {
+        console.error("Error al crear el menú:", error);
+      }
 
       res.status(200).json({
         message: "Inicio de sesión exitoso.",

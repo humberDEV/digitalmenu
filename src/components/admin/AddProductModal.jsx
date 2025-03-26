@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export default function AddProductModal({
   open,
@@ -63,6 +64,7 @@ export default function AddProductModal({
 
   const handleProductCategoryChange = (e) => {
     const value = e.target.value;
+    console.log("Categoría seleccionada:", value);
     setProductCategory(value);
     validateField("productCategory", value);
   };
@@ -81,15 +83,20 @@ export default function AddProductModal({
   };
 
   const handleAddProduct = () => {
+    console.log("Agregando producto...");
+    console.log("isFormValid:", isFormValid());
     if (!isFormValid()) return;
 
-    addProduct({
-      id: Date.now(),
+    const product = {
+      id: uuidv4(),
       name: productName,
       price: parseFloat(productPrice),
       description: productDescription,
-      categoryId: parseInt(productCategory),
-    });
+      categoryId: productCategory,
+    };
+
+    addProduct(product);
+    console.log("Producto agregado:", product);
 
     setProductName("");
     setProductDescription("");
