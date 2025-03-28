@@ -8,7 +8,7 @@ export default function Header() {
         <div className="text-3xl font-bold flex items-center space-x-1 hover:scale-105 transition-transform">
           <a href="/" className="flex items-center">
             <span className="font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-indigo-500">
-              Digi
+              Menu
             </span>
             <span className="text-gray-800 font-bold">Page</span>
           </a>

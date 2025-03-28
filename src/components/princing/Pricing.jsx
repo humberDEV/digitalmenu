@@ -94,7 +94,7 @@ export default function Pricing() {
   };
 
   return (
-    <div className="bg-light py-10">
+    <div className="bg-light py-10 ">
       <div className="max-w-5xl mx-auto text-center">
         <h2 className="text-4xl font-extrabold text-dark">Planes de Precios</h2>
         <p className="text-lg mt-2 text-gray-600">

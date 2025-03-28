@@ -1,17 +1,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark, cupcake;
+  themes: [ "light", "dark", "cupcake"];
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Definimos los estilos globales dentro de la capa @layer */
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+  }
 
-body {
-  @apply text-neutral-900;
-  @apply bg-slate-100;
+  body {
+    /* Usa @apply dentro de la capa de estilos base */
+    @apply text-black bg-slate-100;
+  }
 }

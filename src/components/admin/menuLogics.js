@@ -119,6 +119,20 @@ export default function useMenuLogic(setCategories) {
     );
   };
 
+  const handleReorderCategory = (newCategories) => {
+    setCategories(newCategories);
+  };
+
+  const handleReorderProduct = (categoryId, newProducts) => {
+    setCategories((prevCategories) =>
+      prevCategories.map((category) =>
+        category.id === categoryId
+          ? { ...category, products: newProducts }
+          : category
+      )
+    );
+  };
+
   // BACKEND API CALLS
   // 📌 Función para guardar el menú
   const saveMenu = async (categories) => {
@@ -205,5 +219,7 @@ export default function useMenuLogic(setCategories) {
     moveProductUp,
     saveMenu,
     getMenu,
+    handleReorderCategory,
+    handleReorderProduct,
   };
 }

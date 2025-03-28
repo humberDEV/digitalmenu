@@ -5,7 +5,7 @@ import Pricing from "@/components/princing/Pricing";
 export default function PricingPage() {
   return (
     <div className="flex flex-col">
-      <button className="absolute top-6 left-30 text-teal-600 text-xl mb-4">
+      <button className="absolute top-6 left-30 text-teal-600 text-xl mb-4 ml-4">
         <a href="/admin/settings" className="flex items-center space-x-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"

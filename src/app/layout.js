@@ -5,9 +5,9 @@ import connectDB from "../../lib/mongodb";
 import { Toaster } from "sonner";
 
 export const metadata = {
-  title: "DigiPage - Plataforma de menús digitales",
+  title: "MenuPage - Menús digitales",
   description:
-    "DigiPage ofrece páginas y menús digitales fáciles de usar para restaurantes y negocios. Personaliza tu menú con nuestra plataforma intuitiva.",
+    "MenuPage ofrece páginas y menús digitales fáciles de usar para restaurantes y negocios. Personaliza tu menú con nuestra plataforma intuitiva y atrae a más clientes. QR para menus.",
 };
 
 const poppins = Poppins({

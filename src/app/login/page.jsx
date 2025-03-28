@@ -28,7 +28,7 @@ export default function Login() {
 
   useEffect(() => {
     if (pathname?.startsWith("/login")) {
-      document.title = "DigiPage - iniciar sesión";
+      document.title = "MenuPage - iniciar sesión";
     }
   }, [pathname]);
 

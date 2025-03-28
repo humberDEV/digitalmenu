@@ -1,43 +1,40 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-
+import { usePathname } from "next/navigation";
 import menuItems from "./menu-items";
 
-export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+export default function Sidebar({ sidebarOpen, toggleSidebar }) {
+  const pathname = usePathname();
 
   return (
     <>
       <div
         className={`hidden md:block bg-slate-900 text-white ${
-          collapsed ? "w-16" : "w-52"
+          sidebarOpen ? "w-52" : "w-16"
         } transition-all duration-300 h-screen flex flex-col`}
       >
         {/* Encabezado */}
         <div className="flex items-center justify-between p-4">
-          {!collapsed && (
+          {sidebarOpen && (
             <div className="text-xl font-bold flex items-center transition-transform">
               <span className="flex items-center">
                 <span className="font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-indigo-500">
-                  Digi
+                  Menu
                 </span>
                 <span className="text-white-800 font-bold">Page</span>
               </span>
             </div>
           )}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="text-white mb-4"
-          >
-            {collapsed ? (
+          <button onClick={toggleSidebar} className="text-white mb-4">
+            {sidebarOpen ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-6"
+                className="w-6 h-6"
               >
                 <path
                   strokeLinecap="round"
@@ -52,7 +49,7 @@ export default function Sidebar() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-6"
+                className="w-6 h-6"
               >
                 <path
                   strokeLinecap="round"
@@ -66,31 +63,43 @@ export default function Sidebar() {
 
         {/* Navegación */}
         <nav className="flex flex-col flex-grow">
-          {menuItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="flex items-center p-4 hover:bg-gray-700 transition-all duration-100"
-            >
-              <span>{item.icon}</span>
-              {!collapsed && <span className="ml-4">{item.label}</span>}
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex items-center p-4 transition-all duration-100 ${
+                  isActive
+                    ? "bg-gray-700 border-l-4 border-cyan-50"
+                    : "hover:bg-gray-700"
+                }`}
+              >
+                <span>{item.icon}</span>
+                {sidebarOpen && <span className="ml-4">{item.label}</span>}
+              </Link>
+            );
+          })}
         </nav>
       </div>
 
-      {/* Menu para moviles */}
+      {/* Menú para móviles */}
       <div className="block md:hidden">
         <div className="btm-nav">
-          {menuItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className="flex flex-col items-center p-4 hover:bg-gray-700 transition-colors"
-            >
-              <span className="text-white">{item.icon}</span>{" "}
-            </a>
-          ))}
+          {menuItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <a
+                key={item.label}
+                href={item.href}
+                className={`flex flex-col items-center p-4 transition-colors ${
+                  isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                }`}
+              >
+                <span className="text-white">{item.icon}</span>
+              </a>
+            );
+          })}
         </div>
       </div>
     </>

@@ -32,46 +32,49 @@ export default function ProductCard({
     <div className="flex flex-row">
       {isEditing && (
         <div className="flex flex-col justify-center items-center mr-2 gap-2">
-          <div
-            className="btn btn-sm w-10 h-10"
-            disabled={product === firstProduct}
-            onClick={() => moveProductUp(category.id, product.id)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6"
+          {product !== firstProduct && (
+            <div
+              className="btn btn-sm w-10 h-10"
+              onClick={() => moveProductUp(category.id, product.id)}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"
-              />
-            </svg>
-          </div>
-          <div
-            className="btn btn-sm w-10 h-10"
-            disabled={product === lastProduct}
-            onClick={() => moveProductDown(category.id, product.id)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"
+                />
+              </svg>
+            </div>
+          )}
+
+          {product !== lastProduct && (
+            <div
+              className="btn btn-sm w-10 h-10"
+              onClick={() => moveProductDown(category.id, product.id)}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
-              />
-            </svg>
-          </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
+                />
+              </svg>
+            </div>
+          )}
         </div>
       )}
       <div className="flex-1 border border-gray-300 rounded-md p-4 mt-2 mr-2 shadow-sm bg-gray-100">
@@ -152,7 +155,9 @@ export default function ProductCard({
             }}
           />
         ) : (
-          <p className="text-gray-800">{product.description}</p>
+          <p className="text-gray-800 text-left text-sm">
+            {product.description}
+          </p>
         )}
       </div>
       {isEditing && (

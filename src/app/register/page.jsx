@@ -29,7 +29,7 @@ export default function Register() {
 
   useEffect(() => {
     if (pathname.startsWith("/register")) {
-      document.title = "DigiPage - Nuevo usuario";
+      document.title = "MenuPage - Nuevo usuario";
     }
   }, [pathname]);
 
