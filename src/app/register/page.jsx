@@ -72,12 +72,15 @@ export default function Register() {
       body: JSON.stringify({ name, email, password }),
     });
 
+    const data = await response.json();
+
     if (response.ok) {
-      setCookie(null, "token", response.token, { path: "/" });
+      setCookie(null, "token", data.token, { path: "/" });
       toast.success("¡Registro exitoso!");
-      router.push("/admin");
+      setTimeout(() => {
+        router.push("/admin");
+      }, 400);
     } else {
-      const data = await response.json();
       toast.error(data.message || "Hubo un error en el registro.");
     }
   };

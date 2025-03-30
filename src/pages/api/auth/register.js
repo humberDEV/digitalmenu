@@ -35,7 +35,7 @@ const handler = async (req, res) => {
       await newRestaurant.save();
 
       const token = jwt.sign(
-        { email, id: newRestaurant._id },
+        { userId: newRestaurant._id, email },
         process.env.JWT_SECRET,
         { expiresIn: "7d" }
       );

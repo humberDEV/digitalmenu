@@ -40,8 +40,46 @@ export default function MenuPage() {
   }, [categoriesData]);
 
   const [categories, setCategories] = useState([]);
+  const [menuConfig, setMenuConfig] = useState({
+    backgroundColor: "#f5f5f5",
+    fontFamily: { name: "Poppins", class: "font-poppins" },
+    categoryTitleColor: "#f5f5f5",
+    categoryTitleSize: 40,
+    productTitleColor: "#f5f5f5",
+    productTitleSize: 20,
+    productPriceColor: "#f5f5f5",
+    productPriceSize: 16,
+    productDescriptionColor: "#f5f5f5",
+    productDescriptionSize: 14,
+  });
 
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (isEditing) {
+        event.preventDefault();
+        event.returnValue =
+          "Tienes cambios sin guardar. ¿Seguro que quieres salir?";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isEditing]);
+
+  useEffect(() => {
+    if (
+      isEditing &&
+      !window.confirm("Tienes cambios sin guardar. ¿Seguro que quieres salir?")
+    ) {
+      return;
+    }
+  }, [pathname]);
+
   const {
     addCategoryModal,
     setAddCategoryModal,
@@ -63,6 +101,7 @@ export default function MenuPage() {
     handleReorderProduct,
     saveMenu,
     getMenu,
+    getMenuConfig,
   } = useMenuLogic(setCategories);
 
   // 📌 Función para guardar el menú
@@ -91,8 +130,19 @@ export default function MenuPage() {
     setIsEditing(false);
   };
 
+  // 📌 UseEffect para obtener la configuración del menú
+  useEffect(() => {
+    const fetchMenuConfig = async () => {
+      if (getMenuConfig) {
+        const config = await getMenuConfig();
+        setMenuConfig(config);
+      }
+    };
+    fetchMenuConfig();
+  }, []);
+
   return (
-    <>
+    <div className="flex flex-col h-screen overflow-y-hidden">
       <TopBar
         title={"Configura tu menú"}
         isEditing={isEditing}
@@ -100,8 +150,9 @@ export default function MenuPage() {
         onCancel={handleCancel}
       />
 
-      <div className="flex flex-col md:flex-row">
-        <div className="w-full md:w-3/5 p-4">
+      <div className="flex flex-col md:flex-row h-screen overflow-hidden">
+        {/* Contenedor del menú editable */}
+        <div className="w-full md:w-3/5 p-4 max-h-screen overflow-y-auto">
           {isLoading ? (
             <div className="text-gray-500 text-center p-4">
               Cargando menú...
@@ -137,7 +188,8 @@ export default function MenuPage() {
           )}
         </div>
 
-        <div className="w-full md:w-2/5 p-4">
+        {/* Contenedor de la vista previa */}
+        <div className="w-full md:w-2/5 p-4 max-h-screen overflow-y-auto">
           {isLoading ? (
             <div className="text-gray-500 text-center p-4">
               Cargando vista previa...
@@ -147,10 +199,10 @@ export default function MenuPage() {
               No se pudo cargar la vista previa.
             </div>
           ) : (
-            <PreviewMenu menuData={categories} />
+            <PreviewMenu menuData={categories} menuConfig={menuConfig} />
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

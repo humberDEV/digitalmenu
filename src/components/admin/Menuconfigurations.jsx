@@ -55,9 +55,9 @@ export default function MenuConfigurations({
   themeConfig,
   setThemeConfig,
   isEditing,
+  tab,
+  setTab,
 }) {
-  const [tabSelected, setTabSelected] = useState(0);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setThemeConfig({ ...themeConfig, [name]: value });
@@ -72,8 +72,8 @@ export default function MenuConfigurations({
         className="tab"
         aria-label="Personalizar menú"
         defaultChecked
-        disabled={isEditing && tabSelected !== 0}
-        onClick={() => setTabSelected(0)}
+        disabled={isEditing && tab !== 0}
+        onClick={() => setTab(0)}
       />
       <div className="tab-content bg-base-100 border-base-300 p-6">
         <div className="space-y-14">
@@ -217,8 +217,10 @@ export default function MenuConfigurations({
                 <span className="label-text">Seleccionar Fuente</span>
               </label>
               <FontSelector
-                themeConfig={themeConfig}
-                setThemeConfig={setThemeConfig}
+                font={themeConfig.fontFamily}
+                setFont={(font) =>
+                  setThemeConfig({ ...themeConfig, fontFamily: font })
+                }
                 isEditing={isEditing}
               />
             </div>
@@ -232,8 +234,8 @@ export default function MenuConfigurations({
         name="my_tabs_3"
         className="tab"
         aria-label="Personalizar web"
-        disabled={isEditing && tabSelected !== 1}
-        onClick={() => setTabSelected(1)}
+        disabled={isEditing && tab !== 1}
+        onClick={() => setTab(1)}
       />
       <div className="tab-content bg-base-100 border-base-300 p-6">
         {/* contenido */}

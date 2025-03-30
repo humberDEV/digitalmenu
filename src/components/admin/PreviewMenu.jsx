@@ -1,16 +1,63 @@
 export default function PreviewMenu({ menuData, menuConfig }) {
   return (
-    <div className="mockup-phone border-black h-screen w-full bg-white relative ">
-      <div className="flex flex-col text-black h-full w-full">
-        <div className="overflow-y-auto h-full w-full p-4">
+    <div
+      className={`mockup-phone border-black h-screen w-full min-h-screen relative p-4 ${menuConfig?.fontFamily?.class}`}
+      style={{ backgroundColor: menuConfig.backgroundColor }}
+    >
+      {/* Contenedor principal con su propio scroll */}
+      <div className="flex flex-col h-full w-full overflow-y-auto">
+        {/* Contenedor interno para el scroll del contenido */}
+        <div className="overflow-y-scroll h-full w-full mt-4">
           {menuData.length > 0 ? (
             menuData.map((category) => (
               <div key={category.id} className="mb-6">
-                <h3 className="text-lg font-bold mb-2">{category.name}</h3>
-                <ul>
+                {/* Título de la categoría */}
+                <h3
+                  className="font-bold border-b pb-1 mb-4"
+                  style={{
+                    color: menuConfig.categoryTitleColor,
+                    fontSize: `${menuConfig.categoryTitleSize}px`,
+                  }}
+                >
+                  {category.name}
+                </h3>
+                <ul className="space-y-2">
                   {category.products.map((product) => (
-                    <li key={product.id} className="text-sm text-gray-800">
-                      {product.name} - {product.price}€
+                    <li key={product.id} className="flex flex-col">
+                      {/* Contenedor del título y el precio */}
+                      <div className="flex justify-between items-center">
+                        <span
+                          className="font-semibold"
+                          style={{
+                            color: menuConfig.productTitleColor,
+                            fontSize: `${menuConfig.productTitleSize}px`,
+                          }}
+                        >
+                          {product.name}
+                        </span>
+                        <span
+                          className="font-medium"
+                          style={{
+                            color: menuConfig.productPriceColor,
+                            fontSize: `${menuConfig.productPriceSize}px`,
+                          }}
+                        >
+                          {product.price}€
+                        </span>
+                      </div>
+
+                      {/* Descripción del producto */}
+                      {product.description && (
+                        <span
+                          className="mt-1 text-sm"
+                          style={{
+                            color: menuConfig.productDescriptionColor,
+                            fontSize: `${menuConfig.productDescriptionSize}px`,
+                          }}
+                        >
+                          {product.description}
+                        </span>
+                      )}
                     </li>
                   ))}
                 </ul>

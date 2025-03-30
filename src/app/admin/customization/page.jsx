@@ -4,12 +4,26 @@ import TopBar from "@/components/admin/TopBar";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useMenuLogic from "@/components/admin/menuLogics";
+import { toast } from "sonner";
 
 import MenuConfigurations from "@/components/admin/Menuconfigurations";
 import PreviewMenu from "@/components/admin/PreviewMenu";
 
 export default function CustomizationPage() {
+  const [tab, setTab] = useState(0);
   const [categories, setCategories] = useState([]);
+  const [menuConfig, setMenuConfig] = useState({
+    backgroundColor: "#f5f5f5",
+    fontFamily: { name: "Poppins", class: "font-poppins" },
+    categoryTitleColor: "#f5f5f5",
+    categoryTitleSize: 40,
+    productTitleColor: "#f5f5f5",
+    productTitleSize: 20,
+    productPriceColor: "#f5f5f5",
+    productPriceSize: 16,
+    productDescriptionColor: "#f5f5f5",
+    productDescriptionSize: 14,
+  });
 
   // 📌 Función para obtener el menú
   const getMenuFunction = async () => {
@@ -25,7 +39,8 @@ export default function CustomizationPage() {
     queryFn: getMenuFunction,
   });
 
-  const { getMenu } = useMenuLogic(setCategories);
+  const { getMenu, getMenuConfig, saveMenuConfig } =
+    useMenuLogic(setCategories);
 
   useEffect(() => {
     if (categoriesData) {
@@ -56,34 +71,34 @@ export default function CustomizationPage() {
     country: "USA",
   });
 
-  const [menuConfigMock, setMenuConfigMock] = useState({
-    backgroundColor: "#f5f5f5",
-    fontFamily: "Arial",
+  useEffect(() => {
+    const loadMenuConfig = async () => {
+      try {
+        const config = await getMenuConfig();
+        console.log("Config:", config);
+        setMenuConfig(config);
+      } catch (error) {
+        toast.error("Hubo un error al cargar la configuración.");
+      }
+    };
 
-    categoryTitleColor: "#333",
-    categoryTitleSize: 40,
-
-    productTitleColor: "#ff0000",
-    productTitleSize: 20,
-
-    productPriceColor: "#0000ff",
-    productPriceSize: 16,
-
-    productDescriptionColor: "#666",
-    productDescriptionSize: 14,
-  });
+    loadMenuConfig();
+  }, []);
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleSave = () => {
-    if (isEditing) {
-      console.log("Guardando cambios");
+  const handleSave = async () => {
+    setIsEditing((prev) => !prev);
+    if (!isEditing) {
+      return;
     }
-    setIsEditing(!isEditing);
+    await saveMenuConfig(menuConfig);
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     // reiniciar data con la de bbdd
+    const menuConfigInit = await getMenuConfig();
+    setMenuConfig(menuConfigInit);
     setIsEditing(!isEditing);
   };
 
@@ -102,23 +117,27 @@ export default function CustomizationPage() {
             isEditing={isEditing}
             businessData={businessDataMock}
             setBusinessData={setBusinessDataMock}
-            themeConfig={menuConfigMock}
-            setThemeConfig={setMenuConfigMock}
+            themeConfig={menuConfig}
+            setThemeConfig={setMenuConfig}
+            tab={tab}
+            setTab={setTab}
           />
         </div>
-        <div className="w-2/5 p-4">
-          {isLoading ? (
-            <div className="text-gray-500 text-center p-4">
-              Cargando vista previa...
-            </div>
-          ) : isError ? (
-            <div className="text-red-500 text-center p-4">
-              No se pudo cargar la vista previa.
-            </div>
-          ) : (
-            <PreviewMenu menuData={categories} menuConfig={menuConfigMock} />
-          )}
-        </div>
+        {tab === 0 && (
+          <div className="w-2/5 p-4">
+            {isLoading ? (
+              <div className="text-gray-500 text-center p-4">
+                Cargando vista previa...
+              </div>
+            ) : isError ? (
+              <div className="text-red-500 text-center p-4">
+                No se pudo cargar la vista previa.
+              </div>
+            ) : (
+              <PreviewMenu menuData={categories} menuConfig={menuConfig} />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -12,58 +12,54 @@ const fonts = [
   { name: "Fira Code", class: "font-fira-code" },
 ];
 
-export default function FontSelector({
-  themeConfig,
-  setThemeConfig,
-  isEditing,
-}) {
+export default function FontSelector({ font, setFont, isEditing }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const currentFont = fonts.find((f) => f.name === font?.name) || fonts[0];
 
   return (
     <div className="dropdown dropdown-top min-w-full">
       <button
-        className={`btn justify-center px-4 py-2 bg-gray-400 text-black rounded-lg flex items-center gap-4 hover:bg-gray-600 transition-colors h-18 ${
-          !isEditing ? "opacity-50 cursor-not-allowed hover:bg-gray-400" : ""
+        className={`btn justify-center px-4 py-2 bg-gray-400 text-black rounded-lg flex items-center gap-4 transition-colors h-18 ${
+          isEditing ? "hover:bg-gray-600" : "opacity-50 cursor-not-allowed"
         }`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => isEditing && setIsOpen(!isOpen)}
         disabled={!isEditing}
       >
         <div className="flex items-center gap-4">
-          <span className={`${themeConfig.fontFamily} text-2xl`}>Aa</span>
-          <span>{themeConfig.fontFamily}</span>
+          <span className={`${font} text-2xl`}>Aa</span>
+          <span>{currentFont.name}</span>
           <ChevronDown size={24} />
         </div>
       </button>
 
-      <ul
-        className={`dropdown-content menu p-2 shadow-lg bg-white rounded-box w-full mt-2 ${
-          isOpen ? "block" : "hidden"
-        }`}
-      >
-        {fonts.map((font) => (
-          <li key={font.name}>
-            <button
-              disabled={!isEditing}
-              className={`flex items-center gap-4 py-3 px-4 rounded-lg transition-colors ${
-                themeConfig.font === font.class
-                  ? "bg-gray-200"
-                  : `hover:bg-gray-100 ${
-                      !isEditing ? "cursor-not-allowed opacity-50" : ""
-                    }`
-              }`}
-              onClick={() => {
-                if (isEditing) {
-                  setThemeConfig({ ...themeConfig, font: font.class });
-                  setIsOpen(false);
-                }
-              }}
-            >
-              <span className={`${font.class} text-2xl`}>Aa</span>
-              <span>{font.name}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      {isOpen && (
+        <ul className="dropdown-content menu p-2 shadow-lg bg-white rounded-box w-full mt-2">
+          {fonts.map((f) => (
+            <li key={f.name}>
+              <button
+                disabled={!isEditing}
+                className={`flex items-center gap-4 py-3 px-4 rounded-lg transition-colors ${
+                  font === f.class
+                    ? "bg-gray-200"
+                    : isEditing
+                    ? "hover:bg-gray-100"
+                    : "cursor-not-allowed opacity-50"
+                }`}
+                onClick={() => {
+                  if (isEditing) {
+                    setFont(f);
+                    setIsOpen(false);
+                  }
+                }}
+              >
+                <span className={`${f.class} text-2xl`}>Aa</span>
+                <span>{f.name}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

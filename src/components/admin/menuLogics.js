@@ -136,13 +136,12 @@ export default function useMenuLogic(setCategories) {
   // BACKEND API CALLS
   // 📌 Función para guardar el menú
   const saveMenu = async (categories) => {
-    console.log("Guardando menú:", categories);
     try {
       const cookies = parseCookies();
       const token = cookies.token;
 
       if (!token) {
-        alert("No tienes un token de autenticación.");
+        toast.error("No tienes un token de autenticación.");
         return;
       }
 
@@ -200,6 +199,75 @@ export default function useMenuLogic(setCategories) {
     return data.categories || [];
   };
 
+  // 📌 Función para guardar la personalización del menú
+  const saveMenuConfig = async (menuConfig) => {
+    try {
+      const cookies = parseCookies();
+      const token = cookies.token;
+
+      if (!token) {
+        toast.error("No tienes un token de autenticación.");
+        return;
+      }
+
+      if (typeof menuConfig !== "object" || menuConfig === null) {
+        console.error("Error: menuConfig no es un objeto válido:", menuConfig);
+        toast.error("Error: Los datos de la configuración son inválidos.");
+        return;
+      }
+
+      const response = await fetch("/api/menu/savemenuconfig", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ menuConfig }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "Error al guardar la configuración del menú."
+        );
+      }
+
+      toast.success("Configuración guardada correctamente!");
+    } catch (error) {
+      console.error(error);
+      toast.error(`Hubo un error: ${error.message}`);
+    }
+  };
+
+  // 📌 Función para obtener la configuración del menú
+  const getMenuConfig = async () => {
+    const cookies = parseCookies();
+    const token = cookies.token;
+
+    if (!token) {
+      throw new Error("No se encontró el token de autenticación.");
+    }
+
+    console.log("Token:", token);
+
+    const response = await fetch("/api/menu/getmenuconfig", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Respuesta:", response);
+
+    if (!response.ok) {
+      throw new Error("Error al cargar la configuración del menú.");
+    }
+
+    const data = await response.json();
+    return data.config || {};
+  };
+
   return {
     addCategoryModal,
     setAddCategoryModal,
@@ -221,5 +289,7 @@ export default function useMenuLogic(setCategories) {
     getMenu,
     handleReorderCategory,
     handleReorderProduct,
+    saveMenuConfig,
+    getMenuConfig,
   };
 }
