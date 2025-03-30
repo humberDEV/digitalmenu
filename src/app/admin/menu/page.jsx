@@ -1,14 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { v4 as uuidv4 } from "uuid";
+
 // components
 import TopBar from "@/components/admin/TopBar";
 import EditableMenu from "@/components/admin/EditableMenu";
 import PreviewMenu from "@/components/admin/PreviewMenu";
 import useMenuLogic from "@/components/admin/menuLogics";
-import { v4 as uuidv4 } from "uuid";
-
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 
 export default function MenuPage() {
   // 📌 Función para obtener el menú
@@ -54,31 +54,7 @@ export default function MenuPage() {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      if (isEditing) {
-        event.preventDefault();
-        event.returnValue =
-          "Tienes cambios sin guardar. ¿Seguro que quieres salir?";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [isEditing]);
-
-  useEffect(() => {
-    if (
-      isEditing &&
-      !window.confirm("Tienes cambios sin guardar. ¿Seguro que quieres salir?")
-    ) {
-      return;
-    }
-  }, [pathname]);
+  const [editedChanges, setEditedChanges] = useState([]);
 
   const {
     addCategoryModal,
@@ -111,6 +87,7 @@ export default function MenuPage() {
       return;
     }
     await saveMenu(categories);
+    console.log("Cambios guardados:", editedChanges);
   };
 
   // 📌 Función para cancelar la edición
@@ -128,6 +105,80 @@ export default function MenuPage() {
 
     setCategories(formattedCategories);
     setIsEditing(false);
+  };
+
+  // 📌 Función para agregar una categoría
+  const addCategoryWithLogging = (category) => {
+    addCategory(category);
+    setEditedChanges((prevChanges) => [
+      ...prevChanges,
+      {
+        action: "add",
+        entity: "category",
+        details: category,
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+  };
+
+  // 📌 Función para eliminar una categoría
+  const deleteCategoryWithLogging = (categoryId) => {
+    handleDeleteCategory(categoryId);
+    setEditedChanges((prevChanges) => [
+      ...prevChanges,
+      {
+        action: "delete",
+        entity: "category",
+        details: { id: categoryId },
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+  };
+
+  // 📌 Función para mover una categoría
+  const moveCategoryWithLogging = (categoryId, direction) => {
+    if (direction === "up") {
+      moveCategoryUp(categoryId);
+    } else {
+      moveCategoryDown(categoryId);
+    }
+    setEditedChanges((prevChanges) => [
+      ...prevChanges,
+      {
+        action: "move",
+        entity: "category",
+        details: { id: categoryId, direction },
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+  };
+
+  // 📌 Función para agregar un producto
+  const addProductWithLogging = (categoryId, product) => {
+    addProduct(categoryId, product);
+    setEditedChanges((prevChanges) => [
+      ...prevChanges,
+      {
+        action: "add",
+        entity: "product",
+        details: product,
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+  };
+
+  // 📌 Función para eliminar un producto
+  const deleteProductWithLogging = (productId) => {
+    deleteProduct(productId);
+    setEditedChanges((prevChanges) => [
+      ...prevChanges,
+      {
+        action: "delete",
+        entity: "product",
+        details: { id: productId },
+        timestamp: new Date().toISOString(),
+      },
+    ]);
   };
 
   // 📌 UseEffect para obtener la configuración del menú
@@ -174,12 +225,12 @@ export default function MenuPage() {
               setDeleteCategoryModal={setDeleteCategoryModal}
               categoryToDelete={categoryToDelete}
               openDeleteCategoryModal={openDeleteCategoryModal}
-              handleDeleteCategory={handleDeleteCategory}
-              addCategory={addCategory}
-              addProduct={addProduct}
-              deleteProduct={deleteProduct}
-              moveCategoryDown={moveCategoryDown}
-              moveCategoryUp={moveCategoryUp}
+              handleDeleteCategory={deleteCategoryWithLogging}
+              addCategory={addCategoryWithLogging}
+              addProduct={addProductWithLogging}
+              deleteProduct={deleteProductWithLogging}
+              moveCategoryDown={moveCategoryWithLogging}
+              moveCategoryUp={moveCategoryWithLogging}
               moveProductDown={moveProductDown}
               moveProductUp={moveProductUp}
               handleReorderCategory={handleReorderCategory}

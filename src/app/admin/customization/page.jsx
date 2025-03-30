@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import useMenuLogic from "@/components/admin/menuLogics";
 import { toast } from "sonner";
 
-import MenuConfigurations from "@/components/admin/Menuconfigurations";
+import Personalization from "@/components/admin/Personalization";
 import PreviewMenu from "@/components/admin/PreviewMenu";
 
 export default function CustomizationPage() {
@@ -113,7 +113,7 @@ export default function CustomizationPage() {
 
       <div className="flex flex-row ">
         <div className="w-3/5 p-4">
-          <MenuConfigurations
+          <Personalization
             isEditing={isEditing}
             businessData={businessDataMock}
             setBusinessData={setBusinessDataMock}
@@ -138,6 +138,8 @@ export default function CustomizationPage() {
             )}
           </div>
         )}
+
+        {tab === 1 && <div className="w-2/5 p-4">no se que hacer</div>}
       </div>
     </div>
   );

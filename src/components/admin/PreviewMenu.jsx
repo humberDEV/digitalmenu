@@ -1,16 +1,18 @@
+import "@/styles/admin/scroll.css";
+
 export default function PreviewMenu({ menuData, menuConfig }) {
   return (
     <div
-      className={`mockup-phone border-black h-screen w-full min-h-screen relative p-4 ${menuConfig?.fontFamily?.class}`}
+      className={`mockup-phone border-black h-[85vh] w-full relative px-6 overflow-y-hidden ${menuConfig?.fontFamily?.class}`}
       style={{ backgroundColor: menuConfig.backgroundColor }}
     >
       {/* Contenedor principal con su propio scroll */}
       <div className="flex flex-col h-full w-full overflow-y-auto">
         {/* Contenedor interno para el scroll del contenido */}
-        <div className="overflow-y-scroll h-full w-full mt-4">
+        <div className="overflow-y-auto h-full w-full scroll-smooth no-scrollbar">
           {menuData.length > 0 ? (
             menuData.map((category) => (
-              <div key={category.id} className="mb-6">
+              <div key={category.id} className="mb-6 mt-4">
                 {/* Título de la categoría */}
                 <h3
                   className="font-bold border-b pb-1 mb-4"

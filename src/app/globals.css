@@ -17,7 +17,6 @@
   themes: [ "light", "dark", "cupcake"];
 }
 
-/* Definimos los estilos globales dentro de la capa @layer */
 @layer base {
   :root {
     --background: #ffffff;
