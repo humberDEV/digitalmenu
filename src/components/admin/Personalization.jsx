@@ -17,9 +17,9 @@ export default function Personalization({
         name="my_tabs_3"
         className="tab"
         aria-label="Personalizar menú"
-        defaultChecked
         disabled={isEditing && tab !== 0}
-        onClick={() => setTab(0)}
+        checked={tab === 0}
+        onChange={() => setTab(0)}
       />
       <div className="tab-content bg-base-100 border-base-300 p-6">
         <MenuPersonalization
@@ -36,7 +36,8 @@ export default function Personalization({
         className="tab"
         aria-label="Personalizar web"
         disabled={isEditing && tab !== 1}
-        onClick={() => setTab(1)}
+        checked={tab === 1}
+        onChange={() => setTab(1)}
       />
       <div className="tab-content bg-base-100 border-base-300 p-6">
         <PagePersonalization

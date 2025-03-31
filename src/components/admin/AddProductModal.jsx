@@ -64,7 +64,6 @@ export default function AddProductModal({
 
   const handleProductCategoryChange = (e) => {
     const value = e.target.value;
-    console.log("Categoría seleccionada:", value);
     setProductCategory(value);
     validateField("productCategory", value);
   };
@@ -83,8 +82,6 @@ export default function AddProductModal({
   };
 
   const handleAddProduct = () => {
-    console.log("Agregando producto...");
-    console.log("isFormValid:", isFormValid());
     if (!isFormValid()) return;
 
     const product = {
@@ -96,7 +93,6 @@ export default function AddProductModal({
     };
 
     addProduct(product);
-    console.log("Producto agregado:", product);
 
     setProductName("");
     setProductDescription("");

@@ -8,8 +8,10 @@ import { toast } from "sonner";
 
 import Personalization from "@/components/admin/Personalization";
 import PreviewMenu from "@/components/admin/PreviewMenu";
+import PreviewPage from "@/components/admin/PreviewPage";
 
 export default function CustomizationPage() {
+  // get tab from local storage
   const [tab, setTab] = useState(0);
   const [categories, setCategories] = useState([]);
   const [menuConfig, setMenuConfig] = useState({
@@ -24,6 +26,23 @@ export default function CustomizationPage() {
     productDescriptionColor: "#f5f5f5",
     productDescriptionSize: 14,
   });
+
+  useEffect(() => {
+    const storedValue = localStorage.getItem("tab");
+    console.log("storedValue", storedValue);
+
+    if (storedValue === null) {
+      localStorage.setItem("tab", "0");
+      setTab(0);
+    } else {
+      setTab(parseInt(storedValue));
+    }
+  }, []);
+
+  const changeTab = (newTab) => {
+    localStorage.setItem("tab", newTab);
+    setTab(newTab);
+  };
 
   // 📌 Función para obtener el menú
   const getMenuFunction = async () => {
@@ -57,25 +76,35 @@ export default function CustomizationPage() {
   }, [categoriesData]);
 
   const [businessDataMock, setBusinessDataMock] = useState({
-    name: "Nombre empresa",
-    logoUrl: "https://via.placeholder.com/150",
-    glovoUrl: "https://www.glovoapp.com/",
-    justEatUrl: "https://www.just-eat.es/",
-    deliverooUrl: "https://deliveroo.es/",
-    uberEatsUrl: "https://www.ubereats.com/",
-    websiteUrl: "https://www.google.com/",
+    name: "Mi Restaurante",
+    logoUrl: null,
+    subtitle: "El mejor sabor en cada bocado",
+    languages: ["es", "en"],
+    showReviewButton: true,
+    socialLinks: {
+      tiktok: "https://www.tiktok.com/@mirestaurante",
+      instagram: "https://www.instagram.com/mirestaurante",
+      facebook: "https://www.facebook.com/mirestaurante",
+      twitter: "https://twitter.com/mirestaurante",
+    },
+    deliveryLinks: {
+      glovo: "https://www.glovoapp.com/",
+      justEat: "https://www.just-eat.es/",
+      deliveroo: "https://deliveroo.es/",
+      uberEats: "https://www.ubereats.com/",
+    },
     phone: "123456789",
-    address: "Calle Falsa 123",
-    city: "Springfield",
-    postalCode: "12345",
-    country: "USA",
+    theme: {
+      backgroundColor: "#ffffff",
+      textColor: "#333333",
+      fontFamily: { name: "Poppins", class: "font-poppins" },
+    },
   });
 
   useEffect(() => {
     const loadMenuConfig = async () => {
       try {
         const config = await getMenuConfig();
-        console.log("Config:", config);
         setMenuConfig(config);
       } catch (error) {
         toast.error("Hubo un error al cargar la configuración.");
@@ -112,7 +141,8 @@ export default function CustomizationPage() {
       ></TopBar>
 
       <div className="flex flex-row ">
-        <div className="w-3/5 p-4">
+        <div className="w-3/5 p-4 overflow-y-scroll">
+          {/* personalizacion */}
           <Personalization
             isEditing={isEditing}
             businessData={businessDataMock}
@@ -120,7 +150,7 @@ export default function CustomizationPage() {
             themeConfig={menuConfig}
             setThemeConfig={setMenuConfig}
             tab={tab}
-            setTab={setTab}
+            setTab={changeTab}
           />
         </div>
         {tab === 0 && (
@@ -139,7 +169,15 @@ export default function CustomizationPage() {
           </div>
         )}
 
-        {tab === 1 && <div className="w-2/5 p-4">no se que hacer</div>}
+        {tab === 1 && (
+          <div className="w-2/5 p-4">
+            <PreviewPage
+              businessData={businessDataMock}
+              setBusinessData={setBusinessDataMock}
+              isEditing={isEditing}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
