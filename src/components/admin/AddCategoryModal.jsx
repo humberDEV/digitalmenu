@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 
 export default function AddCategoryModal({ open, onClose, addCategory }) {
   const [categoryName, setCategoryName] = useState("");
@@ -20,65 +23,68 @@ export default function AddCategoryModal({ open, onClose, addCategory }) {
     }
   };
 
-  const handleAddCategory = () => {
-    if (categoryName.trim() && categoryName.length >= 3) {
-      addCategory({
-        id: uuidv4(),
-        name: categoryName,
-      });
+  const isValid = categoryName.trim().length >= 3;
 
-      setCategoryName("");
-      onClose();
-    }
+  const handleAddCategory = () => {
+    if (!isValid) return;
+
+    addCategory({
+      id: uuidv4(),
+      name: categoryName,
+    });
+
+    setCategoryName("");
+    setError("");
+    onClose();
   };
 
   return (
-    <dialog
-      id="addCategoryModal"
-      className={`modal ${open ? "modal-open" : ""}`}
-      onClose={onClose}
-    >
-      <div className="modal-box bg-white p-6 rounded-lg shadow-lg">
-        <h1 className="font-bold text-2xl mb-4 text-gray-800">
-          Agregar categoría
-        </h1>
+    <>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/60 backdrop-blur-sm">
+          <div className="bg-white/5 backdrop-blur-lg border border-white/10 p-6 rounded-2xl shadow-2xl w-full max-w-md">
+            <h1 className="font-bold text-2xl mb-4 text-white">
+              Agregar Categoría
+            </h1>
 
-        {/* Nombre de la categoría */}
-        <div className="w-full mt-4">
-          <label
-            htmlFor="categoryName"
-            className="text-sm font-medium text-gray-700 mb-1 block"
-          >
-            Nombre de la categoría
-          </label>
-          <input
-            id="categoryName"
-            type="text"
-            className={`input input-bordered w-full ${
-              error ? "input-error" : ""
-            }`}
-            placeholder="Ej: Hamburguesas"
-            value={categoryName}
-            onChange={handleCategoryNameChange}
-            autoFocus
-          />
-          {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
-        </div>
+            <div className="w-full mt-4">
+              <Label
+                htmlFor="categoryName"
+                className="text-sm font-medium text-white/80 mb-1 block"
+              >
+                Nombre de la categoría
+              </Label>
+              <Input
+                id="categoryName"
+                type="text"
+                className="input input-bordered w-full"
+                placeholder="Ej: Bebidas"
+                value={categoryName}
+                onChange={handleCategoryNameChange}
+                autoFocus
+              />
+              {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            </div>
 
-        {/* Botones */}
-        <div className="modal-action mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="btn btn-error">
-            Cerrar
-          </button>
-          <button
-            className="btn btn-success"
-            onClick={handleAddCategory}
-            disabled={!categoryName.trim() || categoryName.length < 3}
-          >
-            Agregar
-          </button>
+            <div className="modal-action mt-4 flex justify-end gap-2">
+              <Button variant="ghost" onClick={onClose}>
+                Cerrar
+              </Button>
+              <Button
+                onClick={handleAddCategory}
+                className={`transition-all ${
+                  isValid
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-white/10 text-white/40 cursor-not-allowed"
+                }`}
+                disabled={!isValid}
+              >
+                Agregar
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-    </dialog>
+      )}
+    </>
   );
 }

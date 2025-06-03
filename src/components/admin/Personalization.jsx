@@ -1,3 +1,4 @@
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import MenuPersonalization from "./MenuPersonalization";
 import PagePersonalization from "./PagePersonalization";
 
@@ -11,41 +12,49 @@ export default function Personalization({
   setTab,
 }) {
   return (
-    <div className="tabs tabs-lift tabs-lg">
-      <input
-        type="radio"
-        name="my_tabs_3"
-        className="tab"
-        aria-label="Personalizar menú"
-        disabled={isEditing && tab !== 0}
-        checked={tab === 0}
-        onChange={() => setTab(0)}
-      />
-      <div className="tab-content bg-base-100 border-base-300 p-6">
+    <Tabs
+      value={tab === 0 ? "menu" : "web"}
+      onValueChange={(val) => setTab(val === "menu" ? 0 : 1)}
+      className="w-full"
+    >
+      <TabsList className="bg-navy/80 border border-white/10">
+        <TabsTrigger
+          value="menu"
+          disabled={isEditing && tab !== 0}
+          className="text-white data-[state=active]:bg-white/10 data-[state=active]:text-white rounded-md"
+        >
+          Personalizar menú
+        </TabsTrigger>
+        <TabsTrigger
+          value="web"
+          disabled={isEditing && tab !== 1}
+          className="text-white data-[state=active]:bg-white/10 data-[state=active]:text-white rounded-md"
+        >
+          Personalizar web
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent
+        value="menu"
+        className="rounded-xl bg-navy/90 backdrop-blur-lg border border-white/10 p-6"
+      >
         <MenuPersonalization
           themeConfig={themeConfig}
           setThemeConfig={setThemeConfig}
           isEditing={isEditing}
         />
-      </div>
+      </TabsContent>
 
-      {/* Tab para Datos de la Empresa */}
-      <input
-        type="radio"
-        name="my_tabs_3"
-        className="tab"
-        aria-label="Personalizar web"
-        disabled={isEditing && tab !== 1}
-        checked={tab === 1}
-        onChange={() => setTab(1)}
-      />
-      <div className="tab-content bg-base-100 border-base-300 p-6">
+      <TabsContent
+        value="web"
+        className="rounded-xl bg-navy/90 backdrop-blur-lg border border-white/10 p-6"
+      >
         <PagePersonalization
           businessData={businessData}
           setBusinessData={setBusinessData}
           isEditing={isEditing}
         />
-      </div>
-    </div>
+      </TabsContent>
+    </Tabs>
   );
 }

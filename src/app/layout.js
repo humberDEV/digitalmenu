@@ -1,4 +1,4 @@
-import { Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "./QueryProvider";
 import connectDB from "../../lib/mongodb";
@@ -10,9 +10,10 @@ export const metadata = {
     "MenuPage ofrece páginas y menús digitales fáciles de usar para restaurantes y negocios. Personaliza tu menú con nuestra plataforma intuitiva y atrae a más clientes. QR para menus.",
 };
 
-const poppins = Poppins({
+const inter = Inter({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
+  display: "swap",
 });
 
 export default function RootLayout({ children }) {
@@ -20,7 +21,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en" data-theme="light">
-      <body className={`${poppins.className} antialiased`}>
+      <body className={`${inter.className} antialiased`}>
         <QueryProvider>
           <Toaster richColors position="top-center" />
           {children}

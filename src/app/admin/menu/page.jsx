@@ -1,5 +1,6 @@
 "use client";
 
+import "@/styles/admin/scroll.css";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
@@ -193,7 +194,7 @@ export default function MenuPage() {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen overflow-y-hidden">
+    <div className="flex flex-col h-screen overflow-y-hidden bg-[#0b0f19] text-white">
       <TopBar
         title={"Configura tu menú"}
         isEditing={isEditing}
@@ -201,9 +202,9 @@ export default function MenuPage() {
         onCancel={handleCancel}
       />
 
-      <div className="flex flex-col md:flex-row h-screen overflow-hidden">
+      <div className="flex flex-col md:flex-row h-screen ">
         {/* Contenedor del menú editable */}
-        <div className="w-full md:w-3/5 p-4 max-h-screen overflow-y-auto">
+        <div className="w-full md:w-2/3 p-2 max-h-screen space-y-6 overflow-y-auto no-scrollbar">
           {isLoading ? (
             <div className="text-gray-500 text-center p-4">
               Cargando menú...
@@ -240,7 +241,7 @@ export default function MenuPage() {
         </div>
 
         {/* Contenedor de la vista previa */}
-        <div className="w-full md:w-2/5 p-4 max-h-screen overflow-y-auto">
+        <div className="w-full md:w-1/3 p-6 max-h-screen overflow-y-hidden no-scrollbar">
           {isLoading ? (
             <div className="text-gray-500 text-center p-4">
               Cargando vista previa...

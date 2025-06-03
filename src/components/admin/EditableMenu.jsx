@@ -1,6 +1,7 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import "@/styles/admin/scroll.css";
+
 import { Reorder } from "framer-motion";
 import ProductCard from "./ProductCard";
 import "@/styles/admin/EditableMenu.css";
@@ -8,6 +9,8 @@ import "@/styles/admin/EditableMenu.css";
 import AddCategoryModal from "./AddCategoryModal";
 import AddProductModal from "./AddProductModal";
 import DeleteProductModal from "./DeleteProductModal";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function EditableMenu({
   isEditing,
@@ -32,22 +35,41 @@ export default function EditableMenu({
   handleReorderCategory,
   handleReorderProduct,
 }) {
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  // State to track the last added product for scroll/zoom
+  const [selectedProductId, setSelectedProductId] = useState(null);
+
+  const [selectedCategoryScrollId, setSelectedCategoryScrollId] =
+    useState(null);
+  const handleAddCategory = (newCategory) => {
+    addCategory(newCategory);
+    setSelectedCategoryScrollId(newCategory.id);
+  };
+
+  // Handler to wrap addProduct and set selectedProductId
+  const handleAddProduct = (newProduct) => {
+    addProduct(newProduct);
+    setSelectedProductId(newProduct.id);
+  };
+
   return (
-    <div className="container mx-auto p-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 text-white space-y-8 overflow-y-auto no-scrollbar pb-24 relative">
       {isEditing && (
-        <div className="flex gap-4">
-          <button
-            className="btn btn-neutral px-6 py-3 rounded-lg shadow-md transition duration-300 ease-in-out hover:bg-blue-600"
+        <div className="flex flex-wrap gap-3 mt-2 sm:mt-6 sticky top-0 z-50 bg-[#0b0f19]">
+          <Button
+            variant="ghost"
+            className="bg-glass backdrop-blur-md border border-white/10 text-white hover:bg-white/10 transition px-4 py-2 rounded-xl"
             onClick={() => setAddCategoryModal(true)}
           >
             + Agregar Categoría
-          </button>
-          <button
-            className="btn btn-neutral px-6 py-3 rounded-lg shadow-md transition duration-300 ease-in-out hover:bg-blue-600"
+          </Button>
+          <Button
+            variant="ghost"
+            className="bg-glass backdrop-blur-md border border-white/10 text-white hover:bg-white/10 transition px-4 py-2 rounded-xl"
             onClick={() => setAddProductModal(true)}
           >
             + Agregar Producto
-          </button>
+          </Button>
         </div>
       )}
 
@@ -57,7 +79,7 @@ export default function EditableMenu({
           axis="y"
           values={categories}
           onReorder={handleReorderCategory}
-          className="space-y-6"
+          className="space-y-8"
         >
           {categories.map((category) => (
             <Reorder.Item
@@ -65,12 +87,15 @@ export default function EditableMenu({
               value={category}
               dragListener={false}
             >
-              <div className="p-4 rounded-lg bg-white shadow-md mt-6">
+              <div
+                id={`category-${category.id}`}
+                className="rounded-2xl border border-white/10 bg-[#0b0f19]/60 space-y-5 border-t border-white/10 pt-4 px-4 sm:px-6 py-4"
+              >
                 <div className="flex justify-between items-center">
                   {isEditing ? (
                     <input
                       type="text"
-                      className="input input-bordered font-bold text-2xl text-gray-800 rounded-lg p-3"
+                      className="w-full rounded-xl bg-white/5 text-white/90 text-xl font-semibold border border-white/10 focus:outline-none focus:ring-1 focus:ring-white/20 px-3 py-2"
                       value={category.name}
                       placeholder="Nombre de la categoría"
                       onChange={(e) => {
@@ -84,13 +109,13 @@ export default function EditableMenu({
                       }}
                     />
                   ) : (
-                    <h2 className="text-3xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-white/90 tracking-tight py-1">
                       {category.name}
                     </h2>
                   )}
                   {isEditing && (
                     <button
-                      className="btn-xs text-red p-2 rounded-full"
+                      className="p-2 rounded-full"
                       onClick={() => openDeleteCategoryModal(category)}
                     >
                       <svg
@@ -111,13 +136,15 @@ export default function EditableMenu({
                   )}
                 </div>
 
-                <div className="flex mt-4 gap-4">
+                <div className="flex mt-4 gap-4 divide-white/10">
                   {isEditing && (
                     <div className="flex flex-col items-center gap-3">
                       {category !== categories[0] && (
                         <button
-                          className="btn btn-xs transition hover:bg-gray-200"
-                          onClick={() => moveCategoryUp(category.id)}
+                          className="text-neutral-400 hover:text-white"
+                          onClick={() => {
+                            moveCategoryUp(category.id, "up");
+                          }}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -138,8 +165,8 @@ export default function EditableMenu({
 
                       {category !== categories[categories.length - 1] && (
                         <button
-                          className="btn btn-xs transition hover:bg-gray-200"
-                          onClick={() => moveCategoryDown(category.id)}
+                          className="text-neutral-400 hover:text-white"
+                          onClick={() => moveCategoryDown(category.id, "down")}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +187,7 @@ export default function EditableMenu({
                     </div>
                   )}
 
-                  <div className="flex-1 border border-gray-300 p-4 rounded-lg mt-2 ml-6 bg-gray-50">
+                  <div className="rounded-xl bg-[#0b0f19]/60 p-4 divide-y divide-white/10 flex-1 space-y-4">
                     <Reorder.Group
                       axis="y"
                       values={category.products}
@@ -175,19 +202,24 @@ export default function EditableMenu({
                           value={product}
                           dragListener={false}
                         >
-                          <ProductCard
-                            product={product}
-                            isEditing={isEditing}
-                            deleteProduct={deleteProduct}
-                            category={category}
-                            moveProductDown={moveProductDown}
-                            moveProductUp={moveProductUp}
-                            firstProduct={category.products[0]}
-                            lastProduct={
-                              category.products[category.products.length - 1]
-                            }
-                            setCategories={setCategories}
-                          />
+                          <div
+                            id={`product-${product.id}`}
+                            className="transition duration-300"
+                          >
+                            <ProductCard
+                              product={product}
+                              isEditing={isEditing}
+                              deleteProduct={deleteProduct}
+                              category={category}
+                              moveProductDown={moveProductDown}
+                              moveProductUp={moveProductUp}
+                              firstProduct={category.products[0]}
+                              lastProduct={
+                                category.products[category.products.length - 1]
+                              }
+                              setCategories={setCategories}
+                            />
+                          </div>
                         </Reorder.Item>
                       ))}
                     </Reorder.Group>
@@ -199,32 +231,34 @@ export default function EditableMenu({
         </Reorder.Group>
       ) : (
         // Non-editable Categories
-        <div className="mt-4">
+        <div className="mt-6 space-y-10">
           {categories.map((category) => (
-            <div
-              key={category.id}
-              className="p-4 bg-white shadow-md rounded-lg mt-6 text-center"
-            >
-              <h2 className="text-3xl font-bold text-gray-900">
+            <div key={category.id}>
+              <h2 className="text-2xl font-semibold text-white/90 tracking-tight text-left pt-1">
                 {category.name}
               </h2>
               <div className="flex mt-4 gap-4">
-                <div className="flex-1 border border-gray-300 p-4 rounded-lg mt-2 ml-6 bg-gray-50">
+                <div className="flex-1">
                   {category.products.map((product) => (
-                    <ProductCard
+                    <div
                       key={product.id}
-                      product={product}
-                      isEditing={isEditing}
-                      deleteProduct={deleteProduct}
-                      category={category}
-                      moveProductDown={moveProductDown}
-                      moveProductUp={moveProductUp}
-                      firstProduct={category.products[0]}
-                      lastProduct={
-                        category.products[category.products.length - 1]
-                      }
-                      setCategories={setCategories}
-                    />
+                      id={`product-${product.id}`}
+                      className="transition duration-300"
+                    >
+                      <ProductCard
+                        product={product}
+                        isEditing={isEditing}
+                        deleteProduct={deleteProduct}
+                        category={category}
+                        moveProductDown={moveProductDown}
+                        moveProductUp={moveProductUp}
+                        firstProduct={category.products[0]}
+                        lastProduct={
+                          category.products[category.products.length - 1]
+                        }
+                        setCategories={setCategories}
+                      />
+                    </div>
                   ))}
                 </div>
               </div>
@@ -233,24 +267,36 @@ export default function EditableMenu({
         </div>
       )}
 
-      <AddCategoryModal
-        open={addCategoryModal}
-        addCategory={addCategory}
-        onClose={() => setAddCategoryModal(false)}
-      />
-      <AddProductModal
-        open={addProductModal}
-        categoryList={categories}
-        addProduct={addProduct}
-        onClose={() => setAddProductModal(false)}
-      />
-      <DeleteProductModal
-        open={deleteCategoryModal}
-        onClose={() => setDeleteCategoryModal(false)}
-        onConfirm={handleDeleteCategory}
-        productName={categoryToDelete?.name}
-        isCategoryModal={true}
-      />
+      <div className="mt-0">
+        <AddCategoryModal
+          open={addCategoryModal}
+          addCategory={handleAddCategory}
+          onClose={() => setAddCategoryModal(false)}
+        />
+        <AddProductModal
+          open={addProductModal}
+          categoryList={categories}
+          addProduct={handleAddProduct}
+          selectedCategoryId={selectedCategoryId}
+          onClose={() => {
+            setSelectedCategoryId(null);
+            setAddProductModal(false);
+          }}
+        />
+        <DeleteProductModal
+          open={deleteCategoryModal}
+          onClose={() => setDeleteCategoryModal(false)}
+          onConfirm={handleDeleteCategory}
+          productName={categoryToDelete?.name}
+          isCategoryModal={true}
+        />
+      </div>
     </div>
   );
 }
+
+// Add this to your global CSS (e.g., EditableMenu.css or a global styles file)
+// .animate-zoom {
+//   transform: scale(1.05);
+//   transition: transform 0.3s ease;
+// }

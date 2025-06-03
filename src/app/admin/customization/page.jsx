@@ -50,6 +50,14 @@ export default function CustomizationPage() {
   };
 
   const {
+    getMenu,
+    getMenuConfig,
+    saveMenuConfig,
+    saveBusinessData,
+    getBusinessData,
+  } = useMenuLogic(setCategories);
+
+  const {
     data: categoriesData,
     isLoading,
     isError,
@@ -57,9 +65,6 @@ export default function CustomizationPage() {
     queryKey: ["menu"],
     queryFn: getMenuFunction,
   });
-
-  const { getMenu, getMenuConfig, saveMenuConfig } =
-    useMenuLogic(setCategories);
 
   useEffect(() => {
     if (categoriesData) {
@@ -75,53 +80,58 @@ export default function CustomizationPage() {
     }
   }, [categoriesData]);
 
-  const [businessDataMock, setBusinessDataMock] = useState({
-    name: "Mi Restaurante",
-    logoUrl: null,
-    subtitle: "El mejor sabor en cada bocado",
-    languages: ["es", "en"],
-    showReviewButton: true,
-    socialLinks: {
-      tiktok: "https://www.tiktok.com/@mirestaurante",
-      instagram: "https://www.instagram.com/mirestaurante",
-      facebook: "https://www.facebook.com/mirestaurante",
-      twitter: "https://twitter.com/mirestaurante",
-    },
-    deliveryLinks: {
-      glovo: "https://www.glovoapp.com/",
-      justEat: "https://www.just-eat.es/",
-      deliveroo: "https://deliveroo.es/",
-      uberEats: "https://www.ubereats.com/",
-    },
-    phone: "123456789",
-    theme: {
-      backgroundColor: "#ffffff",
-      textColor: "#333333",
-      fontFamily: { name: "Poppins", class: "font-poppins" },
-    },
-  });
+  const [businessData, setBusinessData] = useState(null);
+  const [isLoadingBusinessData, setIsLoadingBusinessData] = useState(true);
+  const [isLoadingMenuConfig, setIsLoadingMenuConfig] = useState(true);
+
+  const loadBusinessData = async () => {
+    try {
+      const data = await getBusinessData();
+      setBusinessData(data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al cargar los datos del negocio.");
+    } finally {
+      setIsLoadingBusinessData(false);
+    }
+  };
+
+  const loadMenuConfig = async () => {
+    try {
+      const config = await getMenuConfig();
+      setMenuConfig(config);
+    } catch (error) {
+      toast.error("Hubo un error al cargar la configuración.");
+    } finally {
+      setIsLoadingMenuConfig(false);
+    }
+  };
 
   useEffect(() => {
-    const loadMenuConfig = async () => {
-      try {
-        const config = await getMenuConfig();
-        setMenuConfig(config);
-      } catch (error) {
-        toast.error("Hubo un error al cargar la configuración.");
-      }
-    };
-
+    loadBusinessData();
     loadMenuConfig();
   }, []);
 
   const [isEditing, setIsEditing] = useState(false);
 
+  if (isLoadingBusinessData || isLoadingMenuConfig || isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500">Cargando configuración...</p>
+      </div>
+    );
+  }
+
   const handleSave = async () => {
     setIsEditing((prev) => !prev);
-    if (!isEditing) {
-      return;
+
+    if (!isEditing) return;
+
+    if (tab === 0) {
+      await saveMenuConfig(menuConfig);
+    } else if (tab === 1) {
+      await saveBusinessData(businessData);
     }
-    await saveMenuConfig(menuConfig);
   };
 
   const handleCancel = async () => {
@@ -132,7 +142,7 @@ export default function CustomizationPage() {
   };
 
   return (
-    <div className="scroll-y-">
+    <div className="scroll-y- bg-navy text-white min-h-screen">
       <TopBar
         title={"Personaliza tu menú"}
         isEditing={isEditing}
@@ -140,13 +150,12 @@ export default function CustomizationPage() {
         onCancel={handleCancel}
       ></TopBar>
 
-      <div className="flex flex-row ">
-        <div className="w-3/5 p-4 overflow-y-scroll">
-          {/* personalizacion */}
+      <div className="flex flex-row">
+        <div className="w-full md:w-2/3 p-4 overflow-y-auto bg-navy rounded-xl  shadow-xl">
           <Personalization
             isEditing={isEditing}
-            businessData={businessDataMock}
-            setBusinessData={setBusinessDataMock}
+            businessData={businessData}
+            setBusinessData={setBusinessData}
             themeConfig={menuConfig}
             setThemeConfig={setMenuConfig}
             tab={tab}
@@ -154,7 +163,7 @@ export default function CustomizationPage() {
           />
         </div>
         {tab === 0 && (
-          <div className="w-2/5 p-4">
+          <div className="w-full md:w-1/3 p-4">
             {isLoading ? (
               <div className="text-gray-500 text-center p-4">
                 Cargando vista previa...
@@ -168,14 +177,19 @@ export default function CustomizationPage() {
             )}
           </div>
         )}
-
         {tab === 1 && (
-          <div className="w-2/5 p-4">
-            <PreviewPage
-              businessData={businessDataMock}
-              setBusinessData={setBusinessDataMock}
-              isEditing={isEditing}
-            />
+          <div className="w-full md:w-1/3 p-4 max-h-screen overflow-y-auto no-scrollbar">
+            {isLoading ? (
+              <div className="text-gray-500 text-center p-4">
+                Cargando vista previa...
+              </div>
+            ) : isError ? (
+              <div className="text-red-500 text-center p-4">
+                No se pudo cargar la vista previa.
+              </div>
+            ) : (
+              <PreviewPage businessData={businessData} />
+            )}
           </div>
         )}
       </div>

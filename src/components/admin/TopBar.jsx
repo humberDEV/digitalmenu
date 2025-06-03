@@ -1,42 +1,52 @@
-export default function TopBar({ title, isEditing, onSave, onCancel }) {
+export default function TopBar({
+  title,
+  isEditing,
+  onSave,
+  onCancel,
+  showButtons = true,
+}) {
   return (
-    <div className="flex justify-between items-center bg-gray-200 p-4 rounded-br-md">
+    <div className="flex justify-between items-center bg-[#121a26] border-b border-[#1f1f1f] p-4 rounded-br-md text-white z-40">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-bold">{title}</h1>
+        <h1 className="text-2xl font-bold text-neutral-100 tracking-tight">
+          {title}
+        </h1>
         {isEditing && (
           <div
             className="tooltip tooltip-bottom"
             data-tip="Debes guardar los cambios para que se apliquen en tu web, si no, se perderán"
           >
-            <div className="badge badge-warning text-xs">
+            <span className="bg-yellow-500 text-black text-xs px-2 py-1 rounded-md">
               Editando: cambios sin guardar
-            </div>
+            </span>
           </div>
         )}
       </div>
 
-      <div className="flex gap-6">
-        {/* botón de cancelar */}
-        {isEditing && (
+      {showButtons && (
+        <div className="flex gap-6">
+          {/* botón de cancelar */}
+          {isEditing && (
+            <button
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium text-sm shadow-sm transition"
+              onClick={onCancel}
+            >
+              Cancelar
+            </button>
+          )}
+          {/* botón de guardar */}
           <button
-            className="btn bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-md transition w-full sm:w-auto border-none"
-            onClick={onCancel}
+            className={`px-4 py-2 rounded-md font-medium text-sm shadow-sm transition ${
+              isEditing
+                ? "bg-green-500 hover:bg-green-600 text-white"
+                : "bg-yellow-400 hover:bg-yellow-500 text-black"
+            }`}
+            onClick={onSave}
           >
-            Cancelar
+            {isEditing ? "Guardar" : "Editar"}
           </button>
-        )}
-        {/* botón de guardar */}
-        <button
-          className={`btn ${
-            isEditing
-              ? "bg-teal-500 hover:bg-teal-600"
-              : "bg-orange-300 hover:bg-orange-400"
-          } text-white px-6 py-3 rounded-md transition w-full sm:w-auto border-none`}
-          onClick={onSave}
-        >
-          {isEditing ? "Guardar" : "Editar"}
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

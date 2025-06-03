@@ -3,7 +3,7 @@ import "@/styles/admin/scroll.css";
 export default function PreviewMenu({ menuData, menuConfig }) {
   return (
     <div
-      className={`mockup-phone border-black h-[85vh] w-full relative px-6 overflow-y-hidden ${menuConfig?.fontFamily?.class}`}
+      className={`mockup-phone border-black h-[85vh] w-full relative px-6 overflow-y-hidden rounded-2xl shadow-inner ${menuConfig?.fontFamily?.class}`}
       style={{ backgroundColor: menuConfig.backgroundColor }}
     >
       {/* Contenedor principal con su propio scroll */}
@@ -44,7 +44,7 @@ export default function PreviewMenu({ menuData, menuConfig }) {
                             fontSize: `${menuConfig.productPriceSize}px`,
                           }}
                         >
-                          {product.price}€
+                          {product.price} €
                         </span>
                       </div>
 

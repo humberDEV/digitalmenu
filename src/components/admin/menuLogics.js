@@ -268,6 +268,74 @@ export default function useMenuLogic(setCategories) {
     return data.config || {};
   };
 
+  // 📌 Función para guardar los datos del negocio
+  const saveBusinessData = async (businessData) => {
+    try {
+      const cookies = parseCookies();
+      const token = cookies.token;
+
+      if (!token) {
+        toast.error("No tienes un token de autenticación.");
+        return;
+      }
+
+      if (typeof businessData !== "object" || businessData === null) {
+        console.error(
+          "Error: businessData no es un objeto válido:",
+          businessData
+        );
+        toast.error("Error: Los datos del negocio son inválidos.");
+        return;
+      }
+
+      const response = await fetch("/api/menu/savebusinessdata", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(businessData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "Error al guardar los datos del negocio."
+        );
+      }
+
+      toast.success("Datos del negocio guardados correctamente!");
+    } catch (error) {
+      console.error(error);
+      toast.error(`Hubo un error: ${error.message}`);
+    }
+  };
+
+  // 📌 Función para traernos los datos del negocio
+  const getBusinessData = async () => {
+    const cookies = parseCookies();
+    const token = cookies.token;
+
+    if (!token) {
+      throw new Error("No se encontró el token de autenticación.");
+    }
+
+    const response = await fetch("/api/menu/getbusinessdata", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al cargar los datos del negocio.");
+    }
+
+    const data = await response.json();
+    return data || {};
+  };
+
   return {
     addCategoryModal,
     setAddCategoryModal,
@@ -291,5 +359,7 @@ export default function useMenuLogic(setCategories) {
     handleReorderProduct,
     saveMenuConfig,
     getMenuConfig,
+    saveBusinessData,
+    getBusinessData,
   };
 }
