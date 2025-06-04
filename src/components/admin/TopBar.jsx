@@ -5,13 +5,17 @@ export default function TopBar({
   onCancel,
   showButtons = true,
 }) {
+  const isMobile = () => {
+    return window.innerWidth < 768;
+  };
+
   return (
     <div className="flex justify-between items-center bg-[#121a26] border-b border-[#1f1f1f] p-4 rounded-br-md text-white z-40">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-bold text-neutral-100 tracking-tight leading-snug">
           {title}
         </h1>
-        {isEditing && (
+        {isEditing && !isMobile() && (
           <div
             className="tooltip tooltip-bottom"
             data-tip="Debes guardar los cambios para que se apliquen en tu web, si no, se perderán"

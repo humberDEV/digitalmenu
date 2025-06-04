@@ -60,84 +60,92 @@ export default function PreviewPage({ businessData }) {
 
   return (
     <div
-      className={`mockup-phone border-black min-h-[85vh] h-[85vh] w-full relative py-6 px-6 overflow-y-auto flex flex-col items-center justify-center rounded-2xl ${businessData?.theme?.fontFamily?.class}`}
+      className={`mockup-phone border-black min-h-[85vh] h-[85vh] w-full relative px-6 py-6 overflow-y-auto flex flex-col rounded-2xl ${businessData?.theme?.fontFamily?.class}`}
       style={{ backgroundColor: backgroundColor, color: textColor }}
     >
-      <div className="flex flex-col items-center justify-center flex-grow pt-8 w-full">
-        {/* Logo */}
-        {businessData?.logoUrl && (
-          <img src={businessData.logoUrl} alt="Logo" className="w-28 h-28" />
-        )}
+      <div className="flex flex-col justify-between flex-grow w-full">
+        {/* Bloque central centrado verticalmente */}
+        <div className="flex-grow flex flex-col items-center justify-center gap-y-4 text-center w-full max-w-xs mx-auto">
+          {businessData?.logoUrl && (
+            <img
+              src={businessData.logoUrl}
+              alt="Logo"
+              className="w-24 h-24 rounded-full object-cover"
+            />
+          )}
 
-        {/* Nombre */}
-        <h1 className="text-3xl font-bold" style={{ color: primaryColor }}>
-          {businessData?.name}
-        </h1>
+          <h1
+            className="text-2xl font-bold leading-tight"
+            style={{ color: primaryColor }}
+          >
+            {businessData?.name}
+          </h1>
 
-        {/* Subtítulo */}
-        <p className="text-sm" style={{ color: textDescriptionsColor }}>
-          {businessData?.subtitle}
-        </p>
+          {businessData?.subtitle && (
+            <p
+              className="text-sm text-pretty"
+              style={{ color: textDescriptionsColor }}
+            >
+              {businessData.subtitle}
+            </p>
+          )}
 
-        {/* Descripción */}
-        {businessData?.description && (
-          <p className="text-md mt-3">{businessData.description}</p>
-        )}
+          {businessData?.description && (
+            <p className="text-sm text-muted-foreground text-pretty max-w-screen-md px-8">
+              {businessData.description}
+            </p>
+          )}
 
-        {/* Botón principal: Ver Menú */}
-        <div
-          className="px-4 py-2 text-md rounded-full shadow font-medium mt-4 transition-all duration-200 ease-in-out"
-          style={{ backgroundColor: primaryColor, color: textColor }}
-        >
-          Ver Menú
+          <a href="/menu">
+            <button
+              className="px-4 py-2 rounded-full font-medium shadow transition hover:scale-[1.03]"
+              style={{ backgroundColor: primaryColor, color: textColor }}
+            >
+              Ver Menú
+            </button>
+          </a>
+
+          {businessData?.showReviewButton && (
+            <button
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded-full font-semibold text-sm shadow transition hover:scale-[1.03]"
+              style={{
+                backgroundColor: buttonReviewColor,
+                color: textDescriptionsColor,
+              }}
+            >
+              Déjanos tu reseña 5 <FaStar className="w-4 h-4" />
+            </button>
+          )}
+
+          {businessData?.phone && (
+            <div className="text-center space-y-2">
+              <p className="text-xs" style={{ color: textDescriptionsColor }}>
+                ¿Tienes dudas?
+              </p>
+              <a
+                href={`tel:${businessData.phone}`}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm text-white shadow transition hover:scale-[1.03]"
+                style={{ backgroundColor: buttonCallColor }}
+              >
+                <FaPhone className="w-4 h-4" />
+                Llamar
+              </a>
+            </div>
+          )}
         </div>
 
-        {/* Botón de reseña (colocado debajo de Ver Menú) */}
-        {businessData?.showReviewButton && (
-          <div
-            className="btn px-3 py-2 rounded-full shadow-md font-semibold flex items-center gap-2 mt-3 transition-all duration-200 ease-in-out text-sm"
-            style={{
-              backgroundColor: buttonReviewColor,
-              color: textDescriptionsColor,
-            }}
-          >
-            Déjanos tu reseña 5 <FaStar />
-          </div>
-        )}
-
-        {/* Texto explicativo para llamada y botón, moved here */}
-        {businessData?.phone && (
-          <div className="text-center mt-4">
-            <p className="text-xs" style={{ color: textDescriptionsColor }}>
-              ¿Tienes dudas?
-            </p>
-            <a
-              href={`tel:${businessData.phone}`}
-              className="rounded-full px-3 py-1 shadow font-medium flex items-center gap-2 transition-all text-white mt-1 text-sm mx-auto w-max"
-              style={{ backgroundColor: buttonCallColor }}
-            >
-              <FaPhone className="w-3 h-3" />
-              Llamar
-            </a>
-          </div>
-        )}
-      </div>
-
-      {/* Bloque inferior: redes sociales, delivery */}
-      <div className="mt-auto mb-6 w-full">
-        <div className="text-center space-y-4">
-          {/* Texto Síguenos en redes sociales */}
-          {(businessData?.socialLinks?.instagram?.trim() ||
-            businessData?.socialLinks?.facebook?.trim() ||
-            businessData?.socialLinks?.tiktok?.trim() ||
-            businessData?.socialLinks?.twitter?.trim()) && (
-            <div>
+        {/* Footer fijo abajo */}
+        <div className="w-full max-w-xs mx-auto space-y-4 text-center mt-10">
+          {(businessData?.socialLinks?.instagram ||
+            businessData?.socialLinks?.facebook ||
+            businessData?.socialLinks?.tiktok ||
+            businessData?.socialLinks?.twitter) && (
+            <>
               <p className="text-sm" style={{ color: textDescriptionsColor }}>
                 Síguenos en redes sociales
               </p>
-              {/* Iconos de redes sociales */}
-              <div className="flex justify-center gap-4 mt-1">
-                {businessData?.socialLinks?.instagram?.trim() && (
+              <div className="flex justify-center gap-4">
+                {businessData?.socialLinks?.instagram && (
                   <a
                     href={businessData.socialLinks.instagram}
                     target="_blank"
@@ -149,7 +157,7 @@ export default function PreviewPage({ businessData }) {
                     />
                   </a>
                 )}
-                {businessData?.socialLinks?.facebook?.trim() && (
+                {businessData?.socialLinks?.facebook && (
                   <a
                     href={businessData.socialLinks.facebook}
                     target="_blank"
@@ -161,7 +169,7 @@ export default function PreviewPage({ businessData }) {
                     />
                   </a>
                 )}
-                {businessData?.socialLinks?.tiktok?.trim() && (
+                {businessData?.socialLinks?.tiktok && (
                   <a
                     href={businessData.socialLinks.tiktok}
                     target="_blank"
@@ -173,7 +181,7 @@ export default function PreviewPage({ businessData }) {
                     />
                   </a>
                 )}
-                {businessData?.socialLinks?.twitter?.trim() && (
+                {businessData?.socialLinks?.twitter && (
                   <a
                     href={businessData.socialLinks.twitter}
                     target="_blank"
@@ -186,86 +194,7 @@ export default function PreviewPage({ businessData }) {
                   </a>
                 )}
               </div>
-            </div>
-          )}
-
-          {/* Texto Pide online con + delivery icons */}
-          {(businessData?.deliveryLinks?.glovo ||
-            businessData?.deliveryLinks?.ubereats ||
-            businessData?.deliveryLinks?.justeat ||
-            businessData?.deliveryLinks?.deliveroo) && (
-            <div>
-              <p className="text-sm" style={{ color: textDescriptionsColor }}>
-                Pide online con:
-              </p>
-              <div className="flex justify-center items-center gap-2 flex-wrap mt-2">
-                {businessData?.deliveryLinks?.glovo && (
-                  <a
-                    href={businessData.deliveryLinks.glovo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      alt="Glovo"
-                      src="https://raw.githubusercontent.com/simple-icons/simple-icons/e68541719dc46db7fca57c845180d006c1bfaa99/icons/glovo.svg"
-                      className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity"
-                      style={{
-                        color: primaryColor,
-                      }}
-                    />
-                  </a>
-                )}
-                {businessData?.deliveryLinks?.ubereats && (
-                  <a
-                    href={businessData.deliveryLinks.ubereats}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      alt="Uber Eats"
-                      src="https://raw.githubusercontent.com/simple-icons/simple-icons/e68541719dc46db7fca57c845180d006c1bfaa99/icons/ubereats.svg"
-                      className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity"
-                      style={{
-                        color: primaryColor,
-                      }}
-                    />
-                  </a>
-                )}
-                {businessData?.deliveryLinks?.justeat && (
-                  <a
-                    href={businessData.deliveryLinks.justeat}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Just Eat"
-                  >
-                    <img
-                      alt="Just Eat"
-                      src="https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Just_Eat_Takeaway.com_icon_logo.svg/622px-Just_Eat_Takeaway.com_icon_logo.svg.png?20220629000802"
-                      className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity saturate-0 brightness-0"
-                      style={{
-                        color: primaryColor,
-                      }}
-                    />
-                  </a>
-                )}
-                {businessData?.deliveryLinks?.deliveroo && (
-                  <a
-                    href={businessData.deliveryLinks.deliveroo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      alt="Deliveroo"
-                      src="https://raw.githubusercontent.com/simple-icons/simple-icons/e68541719dc46db7fca57c845180d006c1bfaa99/icons/deliveroo.svg"
-                      className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity"
-                      style={{
-                        color: primaryColor,
-                      }}
-                    />
-                  </a>
-                )}
-              </div>
-            </div>
+            </>
           )}
         </div>
       </div>

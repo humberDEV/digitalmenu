@@ -59,9 +59,9 @@ export default function DashboardPage() {
         </p>
 
         <section className="grid gap-6 md:grid-cols-2 mb-8">
-          <div className="bg-card border border-white/20 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow">
+          <div className="bg-navy/80 border border-white/20 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-              Visitas al menú
+              Visitas al menú en el mes
             </h2>
             <p className="mt-4 text-4xl font-bold">{totalVisits}</p>
             <p className="text-xs text-muted-foreground mt-3">
@@ -69,7 +69,7 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-white/20 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow">
+          <div className="bg-navy/80 border border-white/20 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
               Productos publicados
             </h2>
@@ -82,10 +82,9 @@ export default function DashboardPage() {
 
         <div className="flex flex-col md:flex-row gap-3 w-full max-w-xl">
           <Button className="w-full" onClick={() => router.push("/admin/menu")}>
-            Configurar Menú
+            Modificar productos del Menú
           </Button>
           <Button
-            variant="outline"
             className="w-full"
             onClick={() => router.push("/admin/customization")}
           >
