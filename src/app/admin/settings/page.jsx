@@ -5,6 +5,27 @@ import { useRouter } from "next/navigation";
 import { destroyCookie } from "nookies";
 import { toast } from "sonner";
 
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { LogOut } from "lucide-react";
+
 export default function SettingsPage() {
   const [hasSubscription, setHasSubscription] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -14,122 +35,120 @@ export default function SettingsPage() {
     setHasSubscription(false);
   }, []);
 
-  if (hasSubscription === null) {
-    return null;
-  }
+  if (hasSubscription === null) return null;
 
-  var buttonPricingText = "Contratar un plan";
-  if (hasSubscription) {
-    buttonPricingText = "Mejorar plan";
-  }
+  const buttonPricingText = hasSubscription
+    ? "Mejorar plan"
+    : "Contratar un plan";
 
   const handleLogout = async () => {
     destroyCookie(null, "token", { path: "/" });
     toast.success("Sesión cerrada exitosamente.");
-    setTimeout(() => {
-      router.push("/");
-    }, 400);
+    setTimeout(() => router.push("/"), 400);
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-8 bg-white">
-      {/* Título de la página */}
-      <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 md:mb-8">
+    <div className="min-h-screen p-6 bg-gradient-to-b from-navy to-[#0b0f19] text-white">
+      <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-8">
         Configuración
       </h1>
 
-      {/* Sección Administrar suscripción */}
-      <div className="mt-8 md:mt-12 p-4 md:p-6 rounded-lg shadow-md bg-gray-50">
-        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4">
-          Administrar suscripción
-        </h2>
-        <div className="flex flex-col space-y-2 mb-4">
-          <span className="badge badge-outline p-3 text-xs text-gray-500">
+      {/* Suscripción */}
+      <Card className="mb-8 bg-white/5 border border-white/10 rounded-2xl shadow-sm backdrop-blur-md text-white">
+        <CardHeader>
+          <CardTitle className="text-2xl">Administrar suscripción</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Badge
+            variant="outline"
+            className="text-xs text-white/80 border-white/20 bg-white/10"
+          >
             Plan Actual: Gratuito (Prueba)
-          </span>
-          <span className="text-xs text-gray-500">
+          </Badge>
+          <p className="text-sm text-white/60">
             Contrate con nosotros para obtener acceso a todas las
             funcionalidades.
-          </span>
-        </div>
-
-        {/* Botones de acción */}
-        <div className="flex flex-wrap gap-4 mt-4 justify-center md:justify-start">
-          <a
-            href="/admin/pricing"
-            className="btn bg-teal-500 text-slate-200 rounded-md hover:bg-teal-400 transition w-full sm:w-auto"
+          </p>
+        </CardContent>
+        <CardFooter className="flex flex-wrap gap-4 justify-center md:justify-start">
+          <Button
+            asChild
+            variant="default"
+            className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white"
           >
-            {buttonPricingText}
-          </a>
+            <a href="/admin/pricing">{buttonPricingText}</a>
+          </Button>
           {hasSubscription && (
-            <button className="btn btn-ghost text-red-600 rounded-md transition w-full sm:w-auto">
+            <Button variant="destructive" className="w-full sm:w-auto">
               Cancelar suscripción
-            </button>
+            </Button>
           )}
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
 
-      {/* Sección Cambio de contraseña */}
-      <div className="mt-8 md:mt-12 p-4 md:p-6 rounded-lg shadow-md bg-gray-50">
-        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4">
-          Cambio de contraseña
-        </h2>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <input
-            type="password"
-            placeholder="Nueva contraseña"
-            className="input w-full bg-gray-100 border border-gray-300 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 mb-4 sm:mb-0"
-          />
-          <button className="btn bg-teal-500 text-white px-6 py-3 rounded-md hover:bg-teal-600 transition w-full sm:w-auto">
-            Actualizar contraseña
-          </button>
-        </div>
-      </div>
-
-      {/* Sección Logout */}
-      <div className="mt-8 md:mt-12 p-4 md:p-6 rounded-lg shadow-md bg-gray-50">
-        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4">
-          Cerrar sesión
-        </h2>
-        <button
-          className="btn bg-red-500 text-white px-6 py-3 rounded-md hover:bg-red-600 transition w-full sm:w-auto"
-          onClick={() => setShowLogoutModal(true)}
-        >
-          Cerrar sesión
-        </button>
-      </div>
-
-      {/* Modal de confirmación de logout */}
-      {showLogoutModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg w-80 sm:w-96">
-            <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
-              ¿Deseas cerrar sesión?
-            </h3>
-            <p className="text-gray-700 mb-6">
-              No te preocupes, tus menús seguirán disponibles en línea y podrás
-              acceder a ellos cuando vuelvas a iniciar sesión.
-            </p>
-            <div className="flex justify-end gap-4">
-              <button
-                className="btn btn-outline border-gray-300 text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-md"
-                onClick={() => setShowLogoutModal(false)}
-              >
-                Cancelar
-              </button>
-              <button
-                className="btn bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded-md"
-                onClick={() => {
-                  handleLogout();
-                  setShowLogoutModal(false);
-                }}
-              >
-                Cerrar sesión
-              </button>
-            </div>
+      {/* Contraseña */}
+      <Card className="mb-8 bg-white/5 border border-white/10 rounded-2xl shadow-sm backdrop-blur-md text-white">
+        <CardHeader>
+          <CardTitle className="text-2xl">Cambio de contraseña</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Input
+              type="password"
+              placeholder="Nueva contraseña"
+              className="bg-white/10 text-white/90 border border-white/10 focus:border-neutral-500 focus:outline-none w-full"
+            />
+            <Button variant="secondary" className="w-full sm:w-auto">
+              Actualizar contraseña
+            </Button>
           </div>
-        </div>
-      )}
+        </CardContent>
+      </Card>
+
+      {/* Cerrar sesión */}
+      <Card className="bg-white/5 border border-white/10 rounded-2xl shadow-sm backdrop-blur-md text-white">
+        <CardHeader>
+          <CardTitle className="text-2xl">Cerrar sesión</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AlertDialog open={showLogoutModal} onOpenChange={setShowLogoutModal}>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" className="w-full sm:w-auto">
+                Cerrar sesión
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="bg-navy border border-white/10">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-xl font-semibold flex items-center gap-2">
+                  <LogOut className="w-5 h-5" />
+                  ¿Deseas cerrar sesión?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="mt-2 text-sm text-white/70">
+                  No te preocupes, tus menús seguirán disponibles en línea y
+                  podrás acceder a ellos cuando vuelvas a iniciar sesión.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="space-x-2 mt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowLogoutModal(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    handleLogout();
+                    setShowLogoutModal(false);
+                  }}
+                >
+                  Cerrar sesión
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </CardContent>
+      </Card>
     </div>
   );
 }

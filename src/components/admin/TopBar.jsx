@@ -8,7 +8,7 @@ export default function TopBar({
   return (
     <div className="flex justify-between items-center bg-[#121a26] border-b border-[#1f1f1f] p-4 rounded-br-md text-white z-40">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-bold text-neutral-100 tracking-tight">
+        <h1 className="text-2xl font-bold text-neutral-100 tracking-tight leading-snug">
           {title}
         </h1>
         {isEditing && (

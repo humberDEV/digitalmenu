@@ -155,7 +155,7 @@ export default function MenuPersonalization({
         <h2 className="text-white/90 font-semibold text-base tracking-tight mb-4">
           Cambiar fuente
         </h2>
-        <div className="form-control mb-6 space-y-2">
+        <div className="form-control mb-6 space-y-2 flex flex-col">
           <label className="label">
             <span className="text-white/70 text-sm font-medium">
               Seleccionar Fuente

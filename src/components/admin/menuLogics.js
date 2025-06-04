@@ -336,6 +336,30 @@ export default function useMenuLogic(setCategories) {
     return data || {};
   };
 
+  const getRestaurantData = async () => {
+    const cookies = parseCookies();
+    const token = cookies.token;
+
+    if (!token) {
+      throw new Error("No se encontró el token de autenticación.");
+    }
+
+    const response = await fetch("/api/menu/getrestaurantdata", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al cargar los datos del restaurante.");
+    }
+
+    const data = await response.json();
+    return data || {};
+  };
+
   return {
     addCategoryModal,
     setAddCategoryModal,
@@ -361,5 +385,6 @@ export default function useMenuLogic(setCategories) {
     getMenuConfig,
     saveBusinessData,
     getBusinessData,
+    getRestaurantData,
   };
 }

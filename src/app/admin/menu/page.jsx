@@ -202,7 +202,7 @@ export default function MenuPage() {
         onCancel={handleCancel}
       />
 
-      <div className="flex flex-col md:flex-row h-screen ">
+      <div className="flex flex-col md:flex-row h-screen">
         {/* Contenedor del menú editable */}
         <div className="w-full md:w-2/3 p-2 max-h-screen space-y-6 overflow-y-auto no-scrollbar">
           {isLoading ? (

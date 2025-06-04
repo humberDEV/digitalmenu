@@ -4,18 +4,33 @@ import { useEffect, useState } from "react";
 import useMenuLogic from "@/components/admin/menuLogics";
 import { useRouter } from "next/navigation";
 import TopBar from "@/components/admin/TopBar";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   const [categories, setCategories] = useState([]);
+  const [restaurant, setRestaurant] = useState(null);
   const router = useRouter();
 
-  const { getMenu } = useMenuLogic(setCategories);
+  const { getMenu, getRestaurantData } = useMenuLogic(setCategories);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const menuData = await getMenu();
         setCategories(menuData || []);
+      } catch (error) {
+        console.error("Error al cargar el menú:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const restaurant = await getRestaurantData();
+        setRestaurant(restaurant || {});
+        console.log("Restaurant:", restaurant);
       } catch (error) {
         console.error("Error al cargar el menú:", error);
       }
@@ -32,51 +47,50 @@ export default function DashboardPage() {
   return (
     <>
       <TopBar title={""} showButtons={false} />
-      <div className="p-6 space-y-2">
-        <h1 className="text-3xl font-bold text-left text-gray-800">
-          Bienvenido, Admin
+      <div className="p-8 bg-navy min-h-screen text-white">
+        <h1 className="text-3xl font-semibold tracking-tight mb-1">
+          Bienvenido,{" "}
+          {restaurant?.name
+            ?.toLowerCase()
+            .replace(/\b\w/g, (l) => l.toUpperCase()) || "Admin"}
         </h1>
-        <p className="text-left text-gray-500">Panel de Control 📈</p>
+        <p className="text-muted-foreground mb-8 text-lg">
+          Panel de Control 📊
+        </p>
 
-        <div className="grid gap-4 sm:grid-cols-2 ">
-          <div className="bg-base-100 border border-base-200 rounded-xl p-6">
-            <h2 className="text-sm font-medium text-gray-500">
+        <section className="grid gap-6 md:grid-cols-2 mb-8">
+          <div className="bg-card border border-white/20 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
               Visitas al menú
             </h2>
-            <p className="mt-1 text-3xl font-bold text-primary">
-              {totalVisits}
-            </p>
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="mt-4 text-4xl font-bold">{totalVisits}</p>
+            <p className="text-xs text-muted-foreground mt-3">
               Actualización en tiempo real
             </p>
           </div>
 
-          <div className="bg-base-100 border border-base-200 rounded-xl p-6">
-            <h2 className="text-sm font-medium text-gray-500">
+          <div className="bg-card border border-white/20 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
               Productos publicados
             </h2>
-            <p className="mt-1 text-3xl font-bold text-primary">
-              {totalProducts}
-            </p>
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="mt-4 text-4xl font-bold">{totalProducts}</p>
+            <p className="text-xs text-muted-foreground mt-3">
               Número total de productos en tu carta
             </p>
           </div>
-        </div>
+        </section>
 
-        <div className="flex flex-col max-w-72 justify-center gap-4">
-          <button
-            className="btn transition-colors"
-            onClick={() => router.push("/admin/menu")}
-          >
-            Ir a Configuración del Menú
-          </button>
-          <button
-            className="btn transition-colors"
+        <div className="flex flex-col md:flex-row gap-3 w-full max-w-xl">
+          <Button className="w-full" onClick={() => router.push("/admin/menu")}>
+            Configurar Menú
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full"
             onClick={() => router.push("/admin/customization")}
           >
-            Personalizar Colores y Página web
-          </button>
+            Personalización Visual
+          </Button>
         </div>
       </div>
     </>

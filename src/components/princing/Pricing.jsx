@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Switch } from "@/components/ui/switch";
 
 const pricing = [
   {
@@ -86,31 +87,28 @@ export default function Pricing() {
   };
 
   return (
-    <div className="bg-light py-10 ">
+    <div className="bg-navy text-white py-20 min-h-screen">
       <div className="max-w-5xl mx-auto text-center">
         <h2 className="text-4xl font-extrabold text-dark">Planes de Precios</h2>
-        <p className="text-md mt-2 text-gray-600 max-w-2xl mx-auto">
-          Planes pensados para restaurantes modernos 🍽️ Empieza con lo esencial
-          o dale a tu carta el poder de atraer más clientes.
+        <p className="text-md mt-2 text-gray-200 max-w-2xl mx-auto">
+          Planes pensados para restaurantes modernos 🍽️
         </p>
 
         {/* Switch para cambiar entre mensual y anual */}
         <div className="flex justify-center items-center mt-6">
-          <span className="text-gray-600 mr-2">Mensual</span>
-          <input
-            type="checkbox"
-            className="toggle toggle-primary"
+          <span className="text-gray-300 mr-2">Mensual</span>
+          <Switch
             checked={isAnnual}
-            onChange={() => setIsAnnual(!isAnnual)}
+            onCheckedChange={(checked) => setIsAnnual(checked)}
           />
-          <span className="text-gray-600 ml-2">Anual (ahorra más)</span>
+          <span className="text-gray-300 ml-2">Anual (ahorra más)</span>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 mt-10">
           {currentPricing.map((plan, index) => (
             <div
               key={index}
-              className={`bg-white shadow-xl border rounded-3xl p-8 transition duration-300 ${
+              className={`bg-navy/80 shadow-xl border border-white/10 rounded-3xl p-8 transition duration-300 ${
                 plan.title === "Profesional"
                   ? "border-purple-600 ring-2 ring-purple-200"
                   : "border-gray-200 hover:shadow-2xl"
@@ -121,39 +119,39 @@ export default function Pricing() {
                   Más Popular
                 </div>
               )}
-              <h3 className="text-2xl font-bold text-dark mb-2">
+              <h3 className="text-2xl font-bold text-white mb-2">
                 {plan.title}
               </h3>
-              <p className="text-lg text-green-600 mb-1 font-medium">
+              <p className="text-lg text-red-600 mb-1 font-medium">
                 {plan.discount}
               </p>
               <p className="text-3xl font-semibold text-dark flex items-center justify-center">
-                <span className="line-through text-gray-400 text-xl mr-2">
+                <span className="line-through text-white/40 text-xl mr-2">
                   {plan.originalPrice}
                 </span>
                 {plan.price}
                 {isAnnual && (
-                  <span className="text-sm text-gray-500">/año</span>
+                  <span className="text-sm text-white/60">/año</span>
                 )}
                 {!isAnnual && (
-                  <span className="text-sm text-gray-500">/mes</span>
+                  <span className="text-sm text-white/60">/mes</span>
                 )}
               </p>
               <ul className="mt-6 space-y-3">
                 {plan.features.map((feature, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-2 text-left text-gray-700"
+                    className="flex items-start gap-2 text-left text-gray-200"
                   >
                     {feature}
                   </li>
                 ))}
               </ul>
               <button
-                className={`btn mt-6 w-full rounded-full py-3 font-medium transition ${
+                className={`mt-6 w-full rounded-full py-3 font-medium transition ${
                   plan.title === "Profesional"
                     ? "bg-purple-600 text-white hover:bg-purple-700"
-                    : "btn-primary text-white"
+                    : "bg-purple-500 text-white hover:bg-purple-600"
                 }`}
                 onClick={handleSelectPlan(plan)}
               >
@@ -162,7 +160,7 @@ export default function Pricing() {
             </div>
           ))}
         </div>
-        <p className="mt-10 text-md text-gray-500">
+        <p className="mt-16 text-sm text-gray-500">
           💡 ¿Sabías que los menús con fotos y varios idiomas reciben hasta un
           40% más de interacción? Convierte tu carta en una herramienta para{" "}
           <strong>vender más y destacar frente a la competencia.</strong>
