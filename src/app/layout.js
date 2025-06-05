@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
   connectDB();
 
   return (
-    <html lang="en" data-theme="light">
+    <html lang="es" data-theme="light">
       <body className={`${inter.className} antialiased`}>
         <QueryProvider>
           <Toaster richColors position="top-center" />

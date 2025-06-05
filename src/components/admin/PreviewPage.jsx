@@ -1,4 +1,3 @@
-import { color } from "framer-motion";
 import {
   FaInstagram,
   FaFacebook,
@@ -38,7 +37,7 @@ const adjustBrightness = (color, amount) => {
   );
 };
 
-export default function PreviewPage({ businessData }) {
+export default function PreviewPage({ businessData, slugName = "" }) {
   console.log("businessData", businessData);
   const primaryColor = businessData?.theme?.textColor || "#8B6F29";
   const backgroundColor = businessData?.theme?.backgroundColor || "#F8F1E5";
@@ -57,6 +56,14 @@ export default function PreviewPage({ businessData }) {
 
   // Determine icon filter and color for delivery icons
   const iconColorForDelivery = primaryColor;
+
+  // href dynamic for see menu
+  var hrefMenu = "";
+  if (slugName !== "") {
+    hrefMenu = `${slugName}/menu`;
+  }
+
+  console.log("hrefMenu", hrefMenu);
 
   return (
     <div
@@ -96,7 +103,7 @@ export default function PreviewPage({ businessData }) {
             </p>
           )}
 
-          <a href="/menu">
+          <a href={hrefMenu}>
             <button
               className="px-4 py-2 rounded-full font-medium shadow transition hover:scale-[1.03]"
               style={{ backgroundColor: primaryColor, color: textColor }}

@@ -53,7 +53,7 @@ export default function EditableMenu({
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 text-white space-y-8 overflow-y-auto no-scrollbar pb-24 relative">
+    <div className="mx-auto px-4 sm:px-6 text-white space-y-8 overflow-y-auto no-scrollbar pb-24 relative">
       {isEditing && (
         <div className="flex flex-wrap gap-3 mt-2 sm:mt-6 sticky top-0 z-50 bg-[#0b0f19]">
           <Button
@@ -294,9 +294,3 @@ export default function EditableMenu({
     </div>
   );
 }
-
-// Add this to your global CSS (e.g., EditableMenu.css or a global styles file)
-// .animate-zoom {
-//   transform: scale(1.05);
-//   transition: transform 0.3s ease;
-// }

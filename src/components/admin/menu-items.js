@@ -60,7 +60,7 @@ const menuItems = [
     href: "/admin/customization",
   },
   {
-    label: "Códigos QR",
+    label: "Exportar",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +82,7 @@ const menuItems = [
         />
       </svg>
     ),
-    href: "/admin/qr",
+    href: "/admin/export",
   },
 
   {

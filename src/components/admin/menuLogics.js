@@ -360,12 +360,6 @@ export default function useMenuLogic(setCategories) {
     return data || {};
   };
 
-  async function getBusinessBySlug(slug) {
-    const db = await connectToDB();
-    const business = await db.collection("businesses").findOne({ slug });
-    return business;
-  }
-
   return {
     addCategoryModal,
     setAddCategoryModal,
@@ -392,6 +386,5 @@ export default function useMenuLogic(setCategories) {
     saveBusinessData,
     getBusinessData,
     getRestaurantData,
-    getBusinessBySlug,
   };
 }
