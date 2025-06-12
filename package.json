@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "WATCHPACK_POLLING=true next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -32,6 +32,7 @@
     "mongoose": "^8.9.0",
     "next": "15.0.4",
     "nookies": "^2.5.2",
+    "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-color": "^2.19.3",
     "react-dnd": "^16.0.1",

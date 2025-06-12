@@ -23,7 +23,7 @@ export default async function PublicMenuPage({ params }) {
     const { menuData, menuConfig } = await res.json();
 
     return (
-      <div className="flex items-center justify-center h-screen bg-muted">
+      <div className="flex items-center justify-center min-h-screen bg-muted">
         <Menu menuData={menuData} menuConfig={menuConfig} />
       </div>
     );
